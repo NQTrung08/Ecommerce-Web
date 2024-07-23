@@ -1,5 +1,5 @@
 // components
-import Truncate from 'react-truncate';
+import TruncateMarkup from 'react-truncate-markup';
 
 // hooks
 import {useState, useEffect} from 'react';
@@ -18,15 +18,12 @@ const TruncatedText = ({text, lines = 2, className, width}) => {
     }, []);
 
     return (
-        <span className={className ? className : ''}>
+        <span className={className ? className : ''} style={{width}}>
             {
                 mounted && (
-                    <Truncate lines={lines}
-                              ellipsis={(<span>...</span>)}
-                              width={width}
-                              onTruncate={() => setTruncated(!truncated)}>
-                        {text}
-                    </Truncate>
+                    <TruncateMarkup lines={lines} ellipsis={<span>...</span>} onTruncate={(isTruncated) => setTruncated(isTruncated)}>
+                        <div>{text}</div>
+                    </TruncateMarkup>
                 )
             }
         </span>
@@ -40,4 +37,4 @@ TruncatedText.propTypes = {
     width: PropTypes.number.isRequired
 }
 
-export default TruncatedText
+export default TruncatedText;
