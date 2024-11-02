@@ -48,22 +48,6 @@ const ROUTES = [
         path: '/transactions',
         qty: 279
     },
-    {
-        name: 'Pages',
-        icon: 'layer-group-regular',
-        links: [
-            {name: 'Login', path: '/login'},
-            {name: 'Page 404', path: '/404'},
-        ]
-    },
-    {
-        name: 'Settings',
-        icon: 'gear-regular',
-        links: [
-            {name: 'General Settings', path: '/general-settings'},
-            {name: 'Connected Apps', path: '/connected-apps'}
-        ]
-    }
 ]
 
 export default ROUTES

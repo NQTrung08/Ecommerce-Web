@@ -1,256 +1,222 @@
-// components
-import Spring from '@components/Spring';
-import {NavLink} from 'react-router-dom';
-import {PatternFormat} from 'react-number-format';
-import PasswordInput from '@components/PasswordInput';
-import {toast} from 'react-toastify';
-import Select from '@ui/Select';
+import Spring from "../components/Spring";
+import ChangePasswordModal from "../components/ChangePasswordModal";
+import { useForm, Controller } from "react-hook-form";
+import { PatternFormat } from "react-number-format";
+import { toast } from "react-toastify";
 
 // hooks
-import {useForm, Controller} from 'react-hook-form';
-import {useTheme} from '@contexts/themeContext';
-import {useState} from 'react';
+import { useEffect, useState } from "react";
 
 // utils
-import classNames from 'classnames';
-import countryList from 'react-select-country-list';
-import {City} from 'country-state-city';
+import classNames from "classnames";
+import { getCookie } from "@utils/cookie";
+import { GetOwnShop } from "../api/shop";
+import { changePassword, getProfileOwn } from "../api/profile";
 
 const UserProfileDetails = () => {
-    const {theme, toggleTheme} = useTheme();
-    const {register, setValue, handleSubmit, formState: {errors}, control} = useForm({
-        defaultValues: {
-            firstName: 'Maria',
-            lastName: 'Smith',
-            email: 'maria@email.com',
-            phone: '',
-            password: 'password',
-            country: null,
-            city: null,
-            state: '',
-            zip: '',
-            address: '',
+  const [shopData, setShopData] = useState(null);
+  const [userInfo, setUserInfo] = useState({}); // Initialize as an empty object
+  const [showShopDetails, setShowShopDetails] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = getCookie("user_login");
+      if (token) {
+        try {
+          // const decodedToken = jwtDecode(token);
+          const userData = await getProfileOwn();
+          setUserInfo(userData);
+        } catch (error) {
+          console.error("Invalid token", error);
         }
-    });
-    // eslint-disable-next-line no-unused-vars
-    const [selectedCountry, setSelectedCountry] = useState();
-    // eslint-disable-next-line no-unused-vars
-    const [selectedCity, setSelectedCity] = useState();
-    const [cities, setCities] = useState([]);
+      }
+    };
+    fetchUserData();
+  }, []);
 
-    const getCountriesOptions = () => {
-        let countries = countryList().getData();
-        for (let i = 0; i < countries.length; i++) {
-            if (countries[i].value === 'RU') {
-                countries[i].label = 'Russia [terrorist state]';
-            }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+    setValue,
+  } = useForm({
+    defaultValues: {
+      userName: "",
+      email: "",
+      phone: "",
+      country: null,
+      city: "",
+      shopName: "",
+      pickupAddress: "",
+      sellerEmail: "",
+      sellerPhone: "",
+    },
+  });
+
+  useEffect(() => {
+    if (userInfo?.roles?.some((role) => role.roleName === "shop")) {
+      const fetchShopData = async () => {
+        try {
+          const response = await GetOwnShop();
+          if (response) {
+            setShopData(response);
+            populateShopFields(response);
+          } else {
+            setShopData(null);
+            populateUserFields(userInfo);
+          }
+        } catch (error) {
+          console.error("Error fetching shop data", error);
+          populateUserFields(userInfo);
         }
-        return countries
-    }
+      };
 
-    const handleCountryChange = (country) => {
-        setSelectedCountry(country);
-        setSelectedCity(null);
-        let options = [];
-        const rawData = City.getCitiesOfCountry(country.value);
-        rawData.map(item => options.push({value: item.name, label: item.name}));
-        setCities(options);
+      fetchShopData();
+    } else {
+      populateUserFields(userInfo);
     }
+  }, [userInfo]);
 
-    // do something with the data
-    const onSubmit = data => {
-        console.log(data);
-        toast.success('Profile updated successfully');
+  const populateShopFields = (shopData) => {
+    setValue("shopName", shopData.shop_name || "");
+    setValue("pickupAddress", shopData.address || "");
+    setValue("sellerEmail", shopData.owner_id.email || "");
+    setValue("sellerPhone", shopData.phone_number || "");
+    setValue("userName", shopData.owner_id.userName || "");
+    setValue("email", shopData.owner_id.email || "");
+    setValue("phone", shopData.owner_id.phoneNumber || "");
+  };
+
+  const populateUserFields = (userInfo) => {
+    console.log("userInfo", userInfo);
+    setValue("userName", userInfo.userName || "");
+    setValue("email", userInfo.email || "");
+    setValue("phone", userInfo.phoneNumber || "");
+    setValue("shopName", "");
+    setValue("Address", userInfo ? userInfo.address || "" : "");
+    setValue("sellerEmail", "");
+    setValue("sellerPhone", "");
+  };
+
+  const onSubmit = (data) => {
+    console.log(data);
+    toast.success("Profile updated successfully");
+  };
+
+  const handlePasswordSubmit = async (passwordData) => {
+    try {
+      const { currentPassword, newPassword } = passwordData;
+      const res = await changePassword(currentPassword, newPassword);
+      console.log("Password change response:", res);
+      toast.success("Password changed successfully");
+      setShowPasswordModal(false);
+    } catch (error) {
+      toast.error("Failed to change password");
+      console.error(error);
     }
+  };
 
-    return (
-        <Spring className="card flex flex-col gap-[30px] md:gap-12 md:row-start-2 md:col-span-2 md:!pb-[50px]
-                xl:row-start-1 xl:col-start-2 xl:col-span-1">
-            <div className="flex flex-col gap-5">
-                <h5>My Profile Details</h5>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="grid gap-4 md:grid-cols-2 md:gap-5">
-                        <div className="grid gap-4">
-                            <div className="field-wrapper">
-                                <label className="field-label" htmlFor="firstName">First Name</label>
-                                <input className={classNames('field-input', {'field-input--error': errors.firstName})}
-                                       type="text"
-                                       id="firstName"
-                                       placeholder="First Name"
-                                       defaultValue="Maria"
-                                       {...register('firstName', {required: true})}/>
-                            </div>
-                            <div className="field-wrapper">
-                                <label className="field-label" htmlFor="lastName">Last Name</label>
-                                <input className={classNames('field-input', {'field-input--error': errors.lastName})}
-                                       type="text"
-                                       id="lastName"
-                                       placeholder="Last Name"
-                                       defaultValue="Smith"
-                                       {...register('lastName', {required: true})}/>
-                            </div>
-                            <div className="field-wrapper">
-                                <label className="field-label" htmlFor="email">Email</label>
-                                <input className={classNames('field-input', {'field-input--error': errors.email})}
-                                       type="text"
-                                       id="email"
-                                       placeholder="Email"
-                                       defaultValue="maria@email.com"
-                                       {...register('email', {required: true, pattern: /^\S+@\S+$/i})}/>
-                            </div>
-                            <div className="field-wrapper">
-                                <label className="field-label" htmlFor="phone">Phone Number</label>
-                                <Controller
-                                    name="phone"
-                                    control={control}
-                                    render={({field}) => (
-                                        <PatternFormat
-                                            value={field.value}
-                                            format="+#-###-###-####"
-                                            placeholder="(123) 456-7890"
-                                            className={classNames('field-input', {'field-input--error': errors.phone})}
-                                            getInputRef={field.ref}/>
-                                    )}
-                                />
-                            </div>
-                            <Controller name="password"
-                                        control={control}
-                                        rules={{required: true}}
-                                        render={({field: {onChange, value, ref}}) => (
-                                            <PasswordInput id="profilePassword"
-                                                           innerRef={ref}
-                                                           value={value}
-                                                           isInvalid={errors.password}
-                                                           onChange={onChange}/>
-                                        )}/>
-                        </div>
-                        <div className="grid gap-4">
-                            <div className="field-wrapper">
-                                <label className="field-label" htmlFor="country">Country</label>
-                                <Controller
-                                    name="country"
-                                    control={control}
-                                    render={({field}) => {
-                                        return (
-                                            <Select
-                                                options={getCountriesOptions()}
-                                                value={field.value}
-                                                onChange={(value) => {
-                                                    field.onChange(value);
-                                                    handleCountryChange(value);
-                                                    setValue('city', null);
-                                                }}
-                                                placeholder="Country"
-                                                isSearchable={true}
-                                                innerRef={field.ref}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </div>
-                            <div className="field-wrapper">
-                                <label className="field-label" htmlFor="city">City</label>
-                                <Controller
-                                    name="city"
-                                    control={control}
-                                    render={({field}) => {
-                                        return (
-                                            <Select
-                                                options={cities}
-                                                value={field.value}
-                                                onChange={(value) => {
-                                                    field.onChange(value);
-                                                    setSelectedCity(value);
-                                                }}
-                                                placeholder="City"
-                                                isSearchable={true}
-                                                innerRef={field.ref}
-                                            />
-                                        )
-                                    }}
-                                />
-                            </div>
-                            <div className="field-wrapper">
-                                <label className="field-label" htmlFor="state">State</label>
-                                <input className="field-input"
-                                       type="text"
-                                       id="state"
-                                       placeholder="State"
-                                       {...register('state')}/>
-                            </div>
-                            <div className="field-wrapper">
-                                <label className="field-label" htmlFor="zip">Zip Code</label>
-                                <input className="field-input"
-                                       type="text"
-                                       id="zip"
-                                       placeholder="Zip Code"
-                                       {...register('zip', {pattern: /^\d{5}(?:[-\s]\d{4})?$/i})}/>
-                            </div>
-                            <div className="field-wrapper">
-                                <label className="field-label" htmlFor="address">Address</label>
-                                <input className="field-input"
-                                       type="text"
-                                       id="address"
-                                       placeholder="Address"
-                                       {...register('address')}/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="mt-2.5">
-                        <button className="text-btn" type="button">
-                            Change password
-                        </button>
-                        <button className="btn btn--primary w-full mt-5 md:w-fit md:px-[70px]" type="submit">
-                            Update information
-                        </button>
-                    </div>
-                </form>
-            </div>
-            <div>
-                <h5>Admin Panel Tools</h5>
-                <div className="grid gap-4 mt-5 md:grid-cols-2 md:gap-y-8 md:gap-x-[50px] md:mt-8 lg:grid-cols-3 lg:max-w-[780px]">
-                    <NavLink className="tool-btn" to="/connected-apps">
-                        <span className="icon-wrapper">
-                            <i className="icon icon-window-solid"/>
-                        </span>
-                        <span>
-                            Connected Apps <span className="subheading-2">(12)</span>
-                        </span>
-                    </NavLink>
-                    <NavLink className="tool-btn" to="/connected-apps">
-                        <span className="icon-wrapper">
-                            <i className="icon icon-money-check-dollar-pen-solid" style={{fontSize: 16}}/>
-                        </span>
-                        Payment Methods
-                    </NavLink>
-                    <NavLink className="tool-btn" to="/connected-apps">
-                        <span className="icon-wrapper">
-                            <i className="icon icon-screwdriver-wrench-solid"/>
-                        </span>
-                        Appearance
-                    </NavLink>
-                    <NavLink className="tool-btn" to="/connected-apps">
-                        <span className="icon-wrapper">
-                            <i className="icon icon-shield-halved-solid"/>
-                        </span>
-                        Security Assets
-                    </NavLink>
-                    <NavLink className="tool-btn" to="/connected-apps">
-                        <span className="icon-wrapper">
-                            <i className="icon icon-sliders-solid"/>
-                        </span>
-                        Configuration Settings
-                    </NavLink>
-                    <button className="tool-btn" aria-label="Change theme" onClick={toggleTheme}>
-                        <span className="icon-wrapper">
-                            <i className={`icon icon-${theme === 'light' ? 'sun-bright' : 'moon'}-solid`}/>
-                        </span>
-                        View Mode
-                    </button>
+  const roleNames = userInfo?.roles?.map((role) => role.roleName) || [];
+
+  return (
+    <Spring className="card flex flex-col gap-[30px] md:gap-12 md:row-start-2 md:col-span-2 md:!pb-[50px] xl:row-start-1 xl:col-start-2 xl:col-span-1">
+      {roleNames.includes("admin") ? (
+        <div className="flex flex-col gap-5">
+          <h5>My Profile Details</h5>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="grid gap-4 md:grid-cols-1 md:gap-5">
+              <div className="grid gap-4">
+                <div className="field-wrapper">
+                  <label className="field-label" htmlFor="userName">
+                    Name
+                  </label>
+                  <input
+                    className={classNames("field-input", {
+                      "field-input--error": errors.userName,
+                    })}
+                    type="text"
+                    id="userName"
+                    placeholder={userInfo.userName || "Name"}
+                    {...register("userName", { required: true })}
+                  />
+                  {errors.userName && (
+                    <p className="error-message">Name is required</p>
+                  )}
                 </div>
-            </div>
-        </Spring>
-    )
-}
 
-export default UserProfileDetails
+                <div className="field-wrapper">
+                  <label className="field-label" htmlFor="email">
+                    Email
+                  </label>
+                  <input
+                    className={classNames("field-input", {
+                      "field-input--error": errors.email,
+                    })}
+                    type="text"
+                    id="email"
+                    placeholder={userInfo.email || "Email"}
+                    {...register("email", {
+                      required: true,
+                      pattern: /^\S+@\S+$/i,
+                    })}
+                  />
+                  {errors.email && (
+                    <p className="error-message">Valid email is required</p>
+                  )}
+                </div>
+
+                <div className="field-wrapper">
+                  <label className="field-label" htmlFor="phone">
+                    Phone Number
+                  </label>
+                  <Controller
+                    name="phone"
+                    control={control}
+                    render={({ field }) => (
+                      <PatternFormat
+                        value={field.value}
+                        format="+#-###-###-####"
+                        placeholder={userInfo.phoneNumber || "Phone Number"}
+                        className={classNames("field-input", {
+                          "field-input--error": errors.phone,
+                        })}
+                        getInputRef={field.ref}
+                      />
+                    )}
+                  />
+                  {errors.phone && (
+                    <p className="error-message">Phone number is required</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex justify-between mt-2.5 w-full">
+              <div className="flex w-full justify-between mt-2.5">
+                <button
+                  className="text-red font-bold"
+                  onClick={() => setShowPasswordModal(true)} // Show modal on click
+                >
+                  Change Password
+                </button>
+              </div>
+              <form onSubmit={handleSubmit(onSubmit)} className="">
+                <button
+                  className="btn btn--primary w-full mt-5 md:w-fit md:px-[70px]"
+                  type="submit"
+                >
+                  Save Changes
+                </button>
+              </form>
+            </div>
+          </form>
+        </div>
+      ) : (
+          <div>Không có quyền truy cập</div>
+      )}
+    </Spring>
+  );
+};
+
+export default UserProfileDetails;

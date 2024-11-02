@@ -9,14 +9,10 @@ const GeneralSettings = () => {
     return (
         <>
             <PageHeader title="Settings"/>
-            <div className="widgets-grid md:!grid-cols-2 xl:!grid-cols-[340px,_minmax(0,1fr)]">
-                <div className="widgets-grid md:!grid-cols-2 md:col-span-2 xl:!grid-cols-1 xl:col-span-1">
+            <div className="widgets-grid xl:!grid-cols-[340px,_minmax(0,1fr)]">
                     <UserProfileCard/>
-                    <div className="widgets-grid">
-                        <UserProfilePanel/>
-                        <UserProfileInfo/>
-                    </div>
-                </div>
+                {/* <div className="widgets-grid md:!grid-cols-2 md:col-span-2 xl:!grid-cols-1 xl:col-span-1">
+                </div> */}
                 <UserProfileDetails/>
             </div>
         </>
