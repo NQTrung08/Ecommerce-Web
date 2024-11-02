@@ -99,8 +99,8 @@ const AuthLayout = () => {
         <div className="flex flex-col justify-center items-center lg:p-[60px]">
           <Logo imgClass="w-[60px]" textClass="text-[28px]" />
           <p className="text-center tracking-[0.2px] font-semibold text-lg leading-6 max-w-[540px] my-7 mx-auto">
-            Discover trends, track your orders effortlessly, and enhance your
-            shopping experience.
+            Khám phá xu hướng, theo dõi đơn hàng của bạn một cách dễ dàng và
+            nâng cao trải nghiệm mua sắm của bạn.
           </p>
           <img className="max-w-[780px]" src={media} alt="media" />
         </div>
@@ -113,9 +113,10 @@ const AuthLayout = () => {
           delay={300}
         >
           <div className="flex flex-col gap-2.5 text-center">
-            <h1>Welcome back!</h1>
+            <h1>Chào mừng trở lại!</h1>
             <p className="lg:max-w-[300px] m-auto 4xl:max-w-[unset]">
-              Explore our latest offerings and enjoy your shopping experience.
+              Khám phá các sản phẩm mới nhất của chúng tôi và tận hưởng trải
+              nghiệm mua sắm của bạn.
             </p>
           </div>
           <form className="mt-5" onSubmit={handleSubmit(onSubmit)}>
@@ -130,7 +131,7 @@ const AuthLayout = () => {
                   })}
                   id="email"
                   type="text"
-                  placeholder="Your E-mail address"
+                  placeholder="Địa chỉ E-mail của bạn"
                   {...register("email", {
                     required: true,
                     pattern: /^\S+@\S+$/i,
@@ -144,7 +145,7 @@ const AuthLayout = () => {
                 render={({ field }) => (
                   <PasswordInput
                     id="password"
-                    placeholder="Your password"
+                    placeholder="Mật khẩu của bạn"
                     error={errors.password}
                     innerRef={field.ref}
                     isInvalid={errors.password}
@@ -155,42 +156,15 @@ const AuthLayout = () => {
               />
             </div>
             <div className="flex flex-col items-center gap-6 mt-4 mb-10">
-              <button className="text-btn" onClick={handlePasswordReminder}>
-                Forgot Password?
-              </button>
               <button
                 className="btn btn--primary w-full"
                 type="submit"
-                disabled={loading} // Disable button when loading
+                disabled={loading}
               >
-                Sign In
+                Đăng Nhập
               </button>
             </div>
           </form>
-          <div>
-            <div className="relative">
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-[1px] bg-border" />
-              <span className="flex items-center justify-center relative z-10 w-11 h-[23px] m-auto bg-widget">
-                or
-              </span>
-            </div>
-            <div className="grid grid-cols-1 gap-4 2xs:grid-cols-2 xs:gap-[30px] mt-[30px] mb-9">
-              <div className="btn btn--social" onClick={handleLoginWithGoogle}>
-                <img className="icon" src={google} alt="Google" />
-                Google
-              </div>
-              <LoginSocialFacebook className="btn btn--social">
-                <img className="icon" src={facebook} alt="Facebook" />
-                Facebook
-              </LoginSocialFacebook>
-            </div>
-            <div className="flex justify-center gap-2.5 leading-none">
-              <p>Don’t have an account?</p>
-              <button className="text-btn" onClick={handleSignUp}>
-                Sign Up
-              </button>
-            </div>
-          </div>
         </Spring>
       </div>
     </div>

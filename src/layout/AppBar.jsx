@@ -117,40 +117,6 @@ const AppBar = () => {
                   <img src={activeLocale.icon} alt={activeLocale.label} />
                 </button>
               </CustomTooltip>
-              {/* <div className="relative h-fit mt-1.5 xl:self-end xl:mt-0 xl:mr-1.5">
-                <button
-                  className="text-lg leading-none text-gray dark:text-gray-red xl:text-[20px]"
-                  onClick={handleCartClick}
-                  aria-label="Notifications"
-                >
-                  <i className="fas fa-shopping-cart" />
-                </button>
-                <span
-                  className="absolute w-3 h-3 rounded-full bg-red -top-1.5 -right-1.5 border-[2px] border-body
-                                      xl:w-6 xl:h-6 xl:-top-5 xl:-right-4 xl:flex xl:items-center xl:justify-center"
-                >
-                  <span className="hidden text-xs font-bold text-white dark:text-[#00193B] xl:block">
-                    7
-                  </span>
-                </span>
-              </div> */}
-              {/* <div className="relative h-fit mt-1.5 xl:self-end xl:mt-0 xl:mr-1.5">
-                <button
-                  className="text-lg leading-none text-gray dark:text-gray-red xl:text-[20px]"
-                  onClick={handleMessagesClick} // Use the new function here
-                  aria-label="Messages"
-                >
-                  <i className="fas fa-truck" title="Theo dõi đơn hàng" />
-                </button>
-                <span
-                  className="absolute w-3 h-3 rounded-full bg-green -top-1.5 -right-1.5 border-[2px] border-body
-                                      xl:w-6 xl:h-6 xl:-top-5 xl:-right-4 xl:flex xl:items-center xl:justify-center"
-                >
-                  <span className="hidden text-xs font-bold text-white dark:text-[#00193B] xl:block">
-                    5
-                  </span>
-                </span>
-              </div> */}
               <div className="relative">
                 <button
                   className="h-8 w-8 rounded-full bg-accent text-widget text-sm flex items-center
