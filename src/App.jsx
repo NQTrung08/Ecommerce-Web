@@ -50,16 +50,13 @@ const App = () => {
   const withSidebar =
     location.pathname !== "/login" && location.pathname !== "/404";
 
-  // Google Analytics initialization
   const gaKey = import.meta.env.VITE_GA;
   if (gaKey) ReactGA.initialize(gaKey);
 
-  // Scroll to top on route change
   useEffect(() => {
     appRef.current?.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // Check if the user is authenticated
   const isAuthenticated = () => {
     const token = getCookie("user_login");
     if (token) {
