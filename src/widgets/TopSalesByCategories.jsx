@@ -44,7 +44,7 @@ const TopSalesByCategories = () => {
 
   return (
     <Spring className="card flex flex-col gap-2.5 2xl:col-span-2">
-      <h5>Top Sales by Categories</h5>
+      <h5>Doanh thu theo danh mục</h5>
       <div className="flex flex-col gap-[17px]">
         {statisticData.map((item, index) => (
           <LabeledProgressBar

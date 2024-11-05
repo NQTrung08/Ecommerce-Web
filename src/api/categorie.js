@@ -1,13 +1,64 @@
 import axiosInstance from "./axiosInstance";
-import { getCookie } from "@utils/cookie";
-
-// Get the base API URL from environment variables
 import { URL_API } from "../../src/config/config";
 import { checkToken } from "@utils/auth";
 
+// Create a new category with a file upload, parent_id, and category_name
+export const addCategory = async (parent_id, category_name, file) => {
+  try {
+    const formData = new FormData();
+    formData.append("parent_id", parent_id);
+    formData.append("category_name", category_name);
+    if (file) {
+      formData.append("file", file);
+    }
+
+    const config = checkToken("multipart/form-data");
+    const response = await axiosInstance.post(
+      `${URL_API}category`,
+      formData,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to add category:", error);
+    throw error;
+  }
+};
+
+// Update an existing category's name using its ID
+export const updateCategory = async (parent_id, category_name) => {
+  try {
+    const config = checkToken("application/json");
+    const response = await axiosInstance.put(
+      `${URL_API}category/${parent_id}`,
+      { category_name },
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update category:", error);
+    throw error;
+  }
+};
+
+// Delete a category by its ID
+export const deleteCategory = async (categoryId) => {
+  try {
+    const config = checkToken("application/json");
+    const response = await axiosInstance.delete(
+      `${URL_API}category/${categoryId}`,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to delete category:", error);
+    throw error;
+  }
+};
+
+// Existing createCategories function (if needed for another purpose)
 export const createCategories = async () => {
   try {
-    // Use the environment variable for the base API URL
     const response = await axiosInstance.post(`${URL_API}category/create`);
     return response.data;
   } catch (error) {
@@ -16,9 +67,9 @@ export const createCategories = async () => {
   }
 };
 
+// Fetch all categories
 export const getCategories = async () => {
   try {
-    // Use the environment variable for the base API URL
     const response = await axiosInstance.get(`${URL_API}category`);
     return response.data;
   } catch (error) {
@@ -27,6 +78,7 @@ export const getCategories = async () => {
   }
 };
 
+// Fetch statistical data for categories, with sorting options
 export const statisticCategoryForAdmin = async (sortBy, order) => {
   try {
     const config = checkToken("application/json");
@@ -36,9 +88,22 @@ export const statisticCategoryForAdmin = async (sortBy, order) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch categories", error);
+    console.error("Failed to fetch category statistics", error);
     throw error;
   }
 };
 
-
+// Build a category tree structure
+export const categoryBuildTree = async () => {
+  try {
+    const config = checkToken("application/json");
+    const response = await axiosInstance.get(
+      `${URL_API}category/buildTree`,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch category tree", error);
+    throw error;
+  }
+};
