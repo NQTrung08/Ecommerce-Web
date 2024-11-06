@@ -21,25 +21,22 @@ const CategoryTree = () => {
   const [file, setFile] = useState(null);
   const [parentId, setParentId] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const formatCategory = (categories, level = 0) => {
-      let result = [];
 
-      categories.forEach((category) => {
-        result.push({
-          category_name: category.category_name,
-          _id: category._id,
-          parent_id: category.parent_id,
-          level: level,
-        });
-
-        if (category.children && category.children.length > 0) {
-          result = result.concat(formatCategory(category.children, level + 1));
-        }
+  const formatCategory = (categories, level = 0) => {
+    let result = [];
+    categories.forEach((category) => {
+      result.push({
+        category_name: category.category_name,
+        _id: category._id,
+        parent_id: category.parent_id,
+        level: level,
       });
-
-      return result;
+      if (category.children && category.children.length > 0) {
+        result = result.concat(formatCategory(category.children, level + 1));
+      }
+    });
+    return result;
   };
-  
 
   useEffect(() => {
     fetchCategories();
@@ -66,13 +63,11 @@ const CategoryTree = () => {
         : [],
     })),
   });
-  
+
   const updateTreeData = () => {
     setTreeData(formatTreeData(categories));
     setCategories(formatCategory(categories));
   };
-
-  console.log("setCategories", categories);
 
   const handleActionChange = (e) => {
     setAction(e.target.value);
@@ -85,8 +80,8 @@ const CategoryTree = () => {
         const newCategory = await addCategory(parentId, categoryName, file);
         setCategories((prev) => addCategoryToTree(prev, newCategory, parentId));
         updateTreeData();
-        toast.success("Category added successfully!");
         resetForm();
+        fetchCategories(); 
       } catch (error) {
         console.error("Failed to add category", error);
       }
@@ -101,25 +96,21 @@ const CategoryTree = () => {
         const updatedData = new FormData();
         updatedData.append("category_name", categoryNameNew);
         updatedData.append("parent_id", selectedCategory.parentId || "");
-
         if (file) {
           updatedData.append("file", file);
         }
 
-         await updateCategory(selectedCategory._id, {
-           category_name: categoryNameNew,
-           parent_id: selectedCategory.parentId || "",
-           file: file
-         });
-         setCategories((prev) =>
-           updateCategoryInTree(prev, selectedCategory._id, categoryNameNew)
-         );
-         updateTreeData();setCategories((prev) =>
+        await updateCategory(selectedCategory._id, {
+          category_name: categoryNameNew,
+          parent_id: selectedCategory.parentId || "",
+          file: file,
+        });
+        setCategories((prev) =>
           updateCategoryInTree(prev, selectedCategory._id, categoryNameNew)
         );
         updateTreeData();
-        toast.success("Category updated successfully!");
         resetForm();
+        fetchCategories(); 
       } catch (error) {
         console.error("Failed to edit category", error);
       }
@@ -136,8 +127,8 @@ const CategoryTree = () => {
           deleteCategoryFromTree(prev, selectedCategory._id)
         );
         updateTreeData();
-        toast.success("Category deleted successfully!");
         resetForm();
+        fetchCategories(); 
       } catch (error) {
         console.error("Failed to delete category", error);
       }
@@ -242,7 +233,6 @@ const CategoryTree = () => {
             <option value="" disabled>
               Select Category
             </option>
-            {console.log("first", categories)}
             {categories.map((cat) => (
               <option key={cat._id} value={cat._id}>
                 {cat.category_name}
@@ -297,24 +287,42 @@ const CategoryTree = () => {
             {action.charAt(0).toUpperCase() + action.slice(1)} Category
           </button>
         </div>
-        <div className="w-3/4 h-full flex items-center justify-center">
-          <Tree data={treeData} onNodeClick={handleNodeClick} />
+
+        <div className="w-3/4 p-4">
+          <Tree
+            data={treeData}
+            renderCustomNodeElement={(rd3tProps) => {
+              const { nodeDatum, toggleNode } = rd3tProps;
+              return (
+                <g>
+                  <circle
+                    r="15"
+                    onClick={() => handleNodeClick(nodeDatum)}
+                    fill="lightblue"
+                  />
+                  <text
+                    x="20"
+                    y="5"
+                    onClick={() => handleNodeClick(nodeDatum)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {nodeDatum.name}
+                  </text>
+                </g>
+              );
+            }}
+          />
         </div>
       </div>
 
-      {showDeleteModal && (
-        <Modal
-          title="Confirm Deletion"
-          open={showDeleteModal}
-          onOk={handleDelete}
-          onCancel={() => setShowDeleteModal(false)}
-          okText="Delete"
-          okButtonProps={{ danger: true }}
-          cancelText="Cancel"
-        >
-          <p>Are you sure you want to delete this category?</p>
-        </Modal>
-      )}
+      <Modal
+        title="Delete Category"
+        open={showDeleteModal}
+        onOk={handleDelete}
+        onCancel={() => setShowDeleteModal(false)}
+      >
+        <p>Are you sure you want to delete this category?</p>
+      </Modal>
     </div>
   );
 };
