@@ -25,15 +25,32 @@ export const addCategory = async (parent_id, category_name, file) => {
   }
 };
 
-// Update an existing category's name using its ID
-export const updateCategory = async (parent_id, category_name) => {
+export const updateCategory = async (
+  categoryId,
+  { parent_id, category_name, file }
+) => {
   try {
-    const config = checkToken("application/json");
+    const formData = new FormData();
+    formData.append("category_name", category_name);
+    formData.append("parent_id", parent_id || "");
+
+    if (file) {
+      formData.append("file", file);
+    }
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    };
+
     const response = await axiosInstance.put(
-      `${URL_API}category/${parent_id}`,
-      { category_name },
+      `${URL_API}category/${categoryId}`,
+      formData,
       config
     );
+
     return response.data;
   } catch (error) {
     console.error("Failed to update category:", error);
@@ -41,7 +58,6 @@ export const updateCategory = async (parent_id, category_name) => {
   }
 };
 
-// Delete a category by its ID
 export const deleteCategory = async (categoryId) => {
   try {
     const config = checkToken("application/json");

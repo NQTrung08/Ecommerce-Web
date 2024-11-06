@@ -7,6 +7,9 @@ import {
 } from "../api/categorie";
 import Tree from "react-d3-tree";
 import PageHeader from "@layout/PageHeader";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Modal } from "antd";
 
 const CategoryTree = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -17,39 +20,63 @@ const CategoryTree = () => {
   const [action, setAction] = useState("create");
   const [file, setFile] = useState(null);
   const [parentId, setParentId] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const formatCategory = (categories, level = 0) => {
+      let result = [];
+
+      categories.forEach((category) => {
+        result.push({
+          category_name: category.category_name,
+          _id: category._id,
+          parent_id: category.parent_id,
+          level: level,
+        });
+
+        if (category.children && category.children.length > 0) {
+          result = result.concat(formatCategory(category.children, level + 1));
+        }
+      });
+
+      return result;
+  };
+  
 
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await categoryBuildTree();
-        setCategories(response);
-        setTreeData(formatTreeData(response));
-      } catch (error) {
-        console.error("Failed to fetch categories", error);
-      }
-    };
     fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await categoryBuildTree();
+      setCategories(formatCategory(response));
+      setTreeData(formatTreeData(response));
+    } catch (error) {
+      console.error("Failed to fetch categories", error);
+    }
+  };
 
   const formatTreeData = (categories) => ({
     name: "Categories",
     children: categories.map((category) => ({
       name: category.category_name,
       id: category._id,
-      parentId: category.parent_id, // Added parentId to each node for future reference
+      parentId: category.parent_id,
       children: category.children
         ? formatTreeData(category.children).children
         : [],
     })),
   });
-
+  
   const updateTreeData = () => {
     setTreeData(formatTreeData(categories));
+    setCategories(formatCategory(categories));
   };
+
+  console.log("setCategories", categories);
 
   const handleActionChange = (e) => {
     setAction(e.target.value);
-    resetForm(); // Reset form when action changes
+    resetForm();
   };
 
   const handleAdd = async () => {
@@ -58,34 +85,63 @@ const CategoryTree = () => {
         const newCategory = await addCategory(parentId, categoryName, file);
         setCategories((prev) => addCategoryToTree(prev, newCategory, parentId));
         updateTreeData();
+        toast.success("Category added successfully!");
         resetForm();
       } catch (error) {
         console.error("Failed to add category", error);
       }
     } else {
-      alert("Please fill in all fields for adding a category.");
+      toast.warn("Please fill in all fields for adding a category.");
     }
   };
 
   const handleEdit = async () => {
-    console.log("selectedCategoryDa", selectedCategory, categoryName);
-    if (selectedCategory && categoryName) {
+    if (selectedCategory && categoryNameNew) {
       try {
-        // Update the category with the new name and the parentId from the selectedCategory
-        await updateCategory(selectedCategory.id, {
-          category_name: categoryName, // Use the text from input
-          parent_id: selectedCategory.parentId || null, // Update parentId if available
-        });
-        setCategories((prev) =>
-          updateCategoryInTree(prev, selectedCategory.id, categoryName)
+        const updatedData = new FormData();
+        updatedData.append("category_name", categoryNameNew);
+        updatedData.append("parent_id", selectedCategory.parentId || "");
+
+        if (file) {
+          updatedData.append("file", file);
+        }
+
+         await updateCategory(selectedCategory._id, {
+           category_name: categoryNameNew,
+           parent_id: selectedCategory.parentId || "",
+           file: file
+         });
+         setCategories((prev) =>
+           updateCategoryInTree(prev, selectedCategory._id, categoryNameNew)
+         );
+         updateTreeData();setCategories((prev) =>
+          updateCategoryInTree(prev, selectedCategory._id, categoryNameNew)
         );
         updateTreeData();
+        toast.success("Category updated successfully!");
         resetForm();
       } catch (error) {
         console.error("Failed to edit category", error);
       }
     } else {
-      alert("Please select a category and provide a new name.");
+      toast.warn("Please select a category and provide a new name.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (selectedCategory) {
+      try {
+        await deleteCategory(selectedCategory._id);
+        setCategories((prev) =>
+          deleteCategoryFromTree(prev, selectedCategory._id)
+        );
+        updateTreeData();
+        toast.success("Category deleted successfully!");
+        resetForm();
+      } catch (error) {
+        console.error("Failed to delete category", error);
+      }
+      setShowDeleteModal(false);
     }
   };
 
@@ -93,33 +149,10 @@ const CategoryTree = () => {
     setSelectedCategory({
       id: nodeData.id,
       name: nodeData.name,
-      parentId: nodeData.parentId, 
+      parentId: nodeData.parentId,
     });
-    setCategoryName(nodeData.name); 
-    setParentId(nodeData.parentId || ""); 
-  };
-
-  const handleDelete = async () => {
-    console.log("selectedCategoryDa", selectedCategory);
-    if (selectedCategory) {
-      const confirmDelete = window.confirm(
-        "Are you sure you want to delete this category?"
-      );
-      if (confirmDelete) {
-        try {
-          await deleteCategory(selectedCategory);
-          setCategories((prev) =>
-            deleteCategoryFromTree(prev, selectedCategory.id)
-          );
-          updateTreeData();
-          resetForm();
-        } catch (error) {
-          console.error("Failed to delete category", error);
-        }
-      }
-    } else {
-      alert("Please select a category to delete.");
-    }
+    setCategoryName(nodeData.name);
+    setParentId(nodeData.parentId || "");
   };
 
   const addCategoryToTree = (categories, newCategory, parentId) => {
@@ -166,14 +199,16 @@ const CategoryTree = () => {
 
   const resetForm = () => {
     setCategoryName("");
+    setCategoryNameNew("");
     setFile(null);
     setParentId("");
-    setSelectedCategory(null); // Reset selected category
+    setSelectedCategory(null);
   };
 
   return (
     <div>
       <PageHeader title="Category Management" />
+      <ToastContainer />
       <div className="flex h-screen">
         <div className="w-1/4 p-4 h-full">
           <h2 className="mb-2 text-lg font-bold">Category Form</h2>
@@ -187,23 +222,18 @@ const CategoryTree = () => {
             <option value="delete">Delete</option>
           </select>
 
-          {/* Dropdown to select existing categories for action */}
           <select
-            value={
-              action === "create" || action === "edit"
-                ? parentId
-                : selectedCategory?.id || ""
-            }
+            value={parentId || selectedCategory?.id || ""}
             onChange={(e) => {
               const selectedCat = categories.find(
                 (cat) => cat._id === e.target.value
               );
-              console.log(selectedCat, "selectedCat");
               if (action === "create") {
                 setParentId(e.target.value);
-                setSelectedCategory(null); // Clear selection for create/edit
+                setSelectedCategory(null);
               } else if (action === "delete" || action === "edit") {
-                setSelectedCategory(selectedCat._id);
+                setParentId(e.target.value);
+                setSelectedCategory(selectedCat);
                 setCategoryName(selectedCat ? selectedCat.category_name : "");
               }
             }}
@@ -212,6 +242,7 @@ const CategoryTree = () => {
             <option value="" disabled>
               Select Category
             </option>
+            {console.log("first", categories)}
             {categories.map((cat) => (
               <option key={cat._id} value={cat._id}>
                 {cat.category_name}
@@ -237,13 +268,20 @@ const CategoryTree = () => {
           )}
 
           {action === "edit" && (
-            <input
-              type="text"
-              value={categoryNameNew}
-              onChange={(e) => setCategoryNameNew(e.target.value)}
-              placeholder="Edit Category Name"
-              className="border p-2 mb-2 w-full"
-            />
+            <>
+              <input
+                type="text"
+                value={categoryNameNew}
+                onChange={(e) => setCategoryNameNew(e.target.value)}
+                placeholder="Edit Category Name"
+                className="border p-2 mb-2 w-full"
+              />
+              <input
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="border p-2 mb-2 w-full"
+              />
+            </>
           )}
 
           <button
@@ -252,7 +290,7 @@ const CategoryTree = () => {
                 ? handleAdd
                 : action === "edit"
                 ? handleEdit
-                : handleDelete
+                : () => setShowDeleteModal(true)
             }
             className="bg-blue-500 text-white p-2 w-full"
           >
@@ -263,6 +301,20 @@ const CategoryTree = () => {
           <Tree data={treeData} onNodeClick={handleNodeClick} />
         </div>
       </div>
+
+      {showDeleteModal && (
+        <Modal
+          title="Confirm Deletion"
+          open={showDeleteModal}
+          onOk={handleDelete}
+          onCancel={() => setShowDeleteModal(false)}
+          okText="Delete"
+          okButtonProps={{ danger: true }}
+          cancelText="Cancel"
+        >
+          <p>Are you sure you want to delete this category?</p>
+        </Modal>
+      )}
     </div>
   );
 };
