@@ -19,6 +19,7 @@ const CategoryTree = () => {
   const [categoryNameNew, setCategoryNameNew] = useState("");
   const [action, setAction] = useState("create");
   const [file, setFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null); // State for preview
   const [parentId, setParentId] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
@@ -74,6 +75,18 @@ const CategoryTree = () => {
     resetForm();
   };
 
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+
+    // Set preview image
+    if (selectedFile) {
+      setPreviewImage(URL.createObjectURL(selectedFile));
+    } else {
+      setPreviewImage(null);
+    }
+  };
+
   const handleAdd = async () => {
     if (parentId && categoryName && file) {
       try {
@@ -81,7 +94,7 @@ const CategoryTree = () => {
         setCategories((prev) => addCategoryToTree(prev, newCategory, parentId));
         updateTreeData();
         resetForm();
-        fetchCategories(); 
+        fetchCategories();
       } catch (error) {
         console.error("Failed to add category", error);
       }
@@ -110,7 +123,7 @@ const CategoryTree = () => {
         );
         updateTreeData();
         resetForm();
-        fetchCategories(); 
+        fetchCategories();
       } catch (error) {
         console.error("Failed to edit category", error);
       }
@@ -128,7 +141,7 @@ const CategoryTree = () => {
         );
         updateTreeData();
         resetForm();
-        fetchCategories(); 
+        fetchCategories();
       } catch (error) {
         console.error("Failed to delete category", error);
       }
@@ -192,6 +205,7 @@ const CategoryTree = () => {
     setCategoryName("");
     setCategoryNameNew("");
     setFile(null);
+    setPreviewImage(null); // Reset preview image
     setParentId("");
     setSelectedCategory(null);
   };
@@ -251,9 +265,16 @@ const CategoryTree = () => {
               />
               <input
                 type="file"
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={handleFileChange}
                 className="border p-2 mb-2 w-full"
               />
+              {previewImage && (
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  className="mb-2 w-full h-32 object-cover"
+                />
+              )}
             </>
           )}
 
@@ -268,9 +289,16 @@ const CategoryTree = () => {
               />
               <input
                 type="file"
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={handleFileChange}
                 className="border p-2 mb-2 w-full"
               />
+              {previewImage && (
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  className="mb-2 w-full h-32 object-cover"
+                />
+              )}
             </>
           )}
 
@@ -315,11 +343,14 @@ const CategoryTree = () => {
         </div>
       </div>
 
+      {/* Delete Modal */}
       <Modal
-        title="Delete Category"
+        title="Confirm Delete"
         open={showDeleteModal}
         onOk={handleDelete}
         onCancel={() => setShowDeleteModal(false)}
+        okText="Delete"
+        cancelText="Cancel"
       >
         <p>Are you sure you want to delete this category?</p>
       </Modal>
