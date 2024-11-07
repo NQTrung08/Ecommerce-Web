@@ -319,26 +319,27 @@ const CategoryTree = () => {
         <div className="w-3/4 p-4">
           <Tree
             data={treeData}
-            renderCustomNodeElement={(rd3tProps) => {
-              const { nodeDatum, toggleNode } = rd3tProps;
-              return (
-                <g>
-                  <circle
-                    r="15"
-                    onClick={() => handleNodeClick(nodeDatum)}
-                    fill="lightblue"
-                  />
-                  <text
-                    x="20"
-                    y="5"
-                    onClick={() => handleNodeClick(nodeDatum)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {nodeDatum.name}
-                  </text>
-                </g>
-              );
-            }}
+            orientation="vertical"
+            // renderCustomNodeElement={(rd3tProps) => {
+            //   const { nodeDatum, toggleNode } = rd3tProps;
+            //   return (
+            //     <g>
+            //       <circle
+            //         r="15"
+            //         onClick={() => handleNodeClick(nodeDatum)}
+            //         fill="lightblue"
+            //       />
+            //       <text
+            //         x="20"
+            //         y="5"
+            //         onClick={() => handleNodeClick(nodeDatum)}
+            //         style={{ cursor: "pointer" }}
+            //       >
+            //         {nodeDatum.name}
+            //       </text>
+            //     </g>
+            //   );
+            // }}
           />
         </div>
       </div>
