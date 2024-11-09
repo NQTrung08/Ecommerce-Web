@@ -8,18 +8,18 @@ import {useWindowSize} from 'react-use';
 import {numFormatter} from '@utils/helpers';
 
 const data = [
-    {name: 'Jan', revenue: 4000, expense: 2400},
-    {name: 'Feb', revenue: 3000, expense: 1398},
-    {name: 'Mar', revenue: 2000, expense: 9800},
-    {name: 'Apr', revenue: 3450, expense: 3908},
-    {name: 'May', revenue: 8000, expense: 4800},
-    {name: 'Jun', revenue: 2390, expense: 6800},
-    {name: 'Jul', revenue: 1900, expense: 4300},
-    {name: 'Aug', revenue: 8900, expense: 4500},
-    {name: 'Sep', revenue: 5600, expense: 10000},
-    {name: 'Oct', revenue: 6450, expense: 1200},
-    {name: 'Nov', revenue: 7840, expense: 3000},
-    {name: 'Dec', revenue: 3490, expense: 4300}
+    {name: 'Jan', revenue: 4000},
+    {name: 'Feb', revenue: 3000},
+    {name: 'Mar', revenue: 2000},
+    {name: 'Apr', revenue: 3450},
+    {name: 'May', revenue: 8000},
+    {name: 'Jun', revenue: 2390},
+    {name: 'Jul', revenue: 1900},
+    {name: 'Aug', revenue: 8900},
+    {name: 'Sep', revenue: 5600},
+    {name: 'Oct', revenue: 6450},
+    {name: 'Nov', revenue: 7840},
+    {name: 'Dec', revenue: 3490}
 ];
 
 const CustomTooltip = ({active, payload, label}) => {
@@ -53,7 +53,7 @@ const SalesStats = () => {
     const expenseColor = theme === 'light' ? 'var(--input-border)' : '#8D8D99';
 
     return (
-        <Spring className="card flex flex-col h-[300px] md:h-[494px] lg:col-span-3 xl:col-span-1">
+        <Spring className="card w-full flex flex-col h-[300px] md:h-[494px] lg:col-span-3 xl:col-span-1">
             <div className="flex flex-col gap-2.5 mb-5 md:flex-row md:justify-between md:items-center">
                 <h4>Sales Statistic 2022</h4>
                 <div className="flex items-center gap-5">

@@ -1,20 +1,13 @@
-// components
 import Spring from "@components/Spring";
 import InfoBtn from "@ui/InfoBtn";
-import Counter from "@components/Counter";
-import Trend from "@ui/Trend";
 import Submenu from "@ui/Submenu";
-
-// hooks
 import { useTheme } from "@contexts/themeContext";
 import useSubmenu from "@hooks/useSubmenu";
-
-// assets
 import light from "@assets/logo_light.svg";
 import dark from "@assets/logo_dark.svg";
 import { NavLink } from "react-router-dom";
 
-const MainProfileInfo = () => {
+const MainProfileInfo = ({ totalRevenueEcommerce }) => {
   const { theme } = useTheme();
   const { anchorEl, open, handleClick, handleClose } = useSubmenu();
 
@@ -34,12 +27,14 @@ const MainProfileInfo = () => {
         <div className="flex flex-col gap-2">
           <h3>ShopPoint - Bán lẻ</h3>
           <p>
-            Khám phá các sản phẩm đa dạng, từ những mặt hàng thiết yếu đến những xu hướng mới nhất. Chúng tôi luôn đồng hành cùng bạn, giúp việc mua sắm trở nên dễ dàng và thuận tiện hơn bao giờ hết.
-          </p>         
+            Khám phá các sản phẩm đa dạng, từ những mặt hàng thiết yếu đến những
+            xu hướng mới nhất. Chúng tôi luôn đồng hành cùng bạn, giúp việc mua
+            sắm trở nên dễ dàng và thuận tiện hơn bao giờ hết.
+          </p>
         </div>
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-4">
-            <h5>Tỷ lệ trung bình 2023</h5>
+            <h5>Tỷ lệ trung bình 2024</h5>
             <InfoBtn onClick={handleClick} />
           </div>
           <div className="flex-1 grid grid-cols-1 gap-6 md:grid-cols-2 lg:flex justify-between xl:max-w-[670px]">
@@ -48,26 +43,24 @@ const MainProfileInfo = () => {
                 <i className="icon-diamond text-[23px] mt-1" />
               </div>
               <div>
-                <Counter
-                  className="block -mt-1 font-heading font-semibold leading-[1.1] text-header text-[26px] md:text-[32px]"
-                  num={15412}
-                  prefix="$"
-                />
-                <span className="block label-text mb-2">Doanh thu</span>
-                <Trend value={45.21} />
+                <div className="font-heading font-semibold leading-[1.1] text-header text-[26px] md:text-[32px]">
+                  {totalRevenueEcommerce ? totalRevenueEcommerce.revenue : "0"}
+                </div>
+                <span className="label-text mb-2">Doanh thu</span>
               </div>
             </div>
+
             <div className="flex gap-5">
               <div className="badge-icon bg-accent">
                 <i className="icon-barcode" />
               </div>
               <div>
-                <Counter
-                  className="block -mt-1 font-heading font-semibold leading-[1.1] text-header text-[26px] md:text-[32px]"
-                  num={5412}
-                />
-                <span className="block label-text mb-2">Đơn hàng mới</span>
-                <Trend value={14.36} />
+                <p className="font-heading font-semibold leading-[1.1] text-header text-[26px] md:text-[32px]">
+                  {totalRevenueEcommerce
+                    ? totalRevenueEcommerce.newOrders
+                    : "0"}
+                </p>
+                <span className="label-text mb-2">Đơn hàng mới</span>
               </div>
             </div>
           </div>

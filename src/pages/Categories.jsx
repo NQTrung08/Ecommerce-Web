@@ -5,16 +5,16 @@ import {
   updateCategory,
   deleteCategory,
 } from "../api/categorie";
-import Tree from "react-d3-tree";
 import PageHeader from "@layout/PageHeader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Modal } from "antd";
+import { Modal, Tree } from "antd";
+const { DirectoryTree } = Tree;
 
 const CategoryTree = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [treeData, setTreeData] = useState({});
+  const [treeData, setTreeData] = useState([]);
   const [categoryName, setCategoryName] = useState("");
   const [categoryNameNew, setCategoryNameNew] = useState("");
   const [action, setAction] = useState("create");
@@ -22,7 +22,6 @@ const CategoryTree = () => {
   const [previewImage, setPreviewImage] = useState(null); // State for preview
   const [parentId, setParentId] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
   const formatCategory = (categories, level = 0) => {
     let result = [];
     categories.forEach((category) => {
@@ -43,6 +42,72 @@ const CategoryTree = () => {
     fetchCategories();
   }, []);
 
+  const onDragEnter = (info) => {
+    console.log(info);
+    
+  };
+ const onDrop = (info) => {
+   // Ensure treeData is an array before proceeding
+   if (!Array.isArray(treeData)) {
+     console.error("treeData is not an array! Defaulting to empty array.");
+     setTreeData([]); // Default to an empty array if treeData is not an array
+     return;
+   }
+
+   console.log("infoinfoinfoinfo", info);
+   const dropKey = info.node.key;
+   const dragKey = info.dragNode.key;
+   const dropPos = info.node.pos.split("-");
+   const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
+
+   const loop = (data, key, callback) => {
+     for (let i = 0; i < data.length; i++) {
+       if (data[i].key === key) {
+         return callback(data[i], i, data);
+       }
+       if (data[i].children) {
+         loop(data[i].children, key, callback);
+       }
+     }
+   };
+
+   const data = JSON.parse(JSON.stringify(treeData));
+
+   let dragObj;
+   loop(data, dragKey, (item, index, arr) => {
+     arr.splice(index, 1);
+     dragObj = item;
+   });
+
+   if (!info.dropToGap) {
+     loop(data, dropKey, (item) => {
+       item.children = item.children || [];
+       item.children.unshift(dragObj);
+     });
+   } else {
+     let ar = [];
+     let i;
+     loop(data, dropKey, (_item, index, arr) => {
+       ar = arr;
+       i = index;
+     });
+     if (dropPosition === -1) {
+       ar.splice(i, 0, dragObj);
+     } else {
+       ar.splice(i + 1, 0, dragObj);
+     }
+   }
+
+   setTreeData(data);
+ };
+
+  const onSelect = (keys, info) => {
+    console.log("Trigger Select", keys, info);
+  };
+  const onExpand = (keys, info) => {
+    console.log("Trigger Expand", keys, info);
+  };
+
   const fetchCategories = async () => {
     try {
       const response = await categoryBuildTree();
@@ -52,6 +117,28 @@ const CategoryTree = () => {
       console.error("Failed to fetch categories", error);
     }
   };
+
+ const convert = (node, parentKey = "") => {
+   // Generate the key for the current node
+   const key = parentKey ? `${parentKey}-${node.id}` : node.id;
+
+   // Initialize the transformed node
+   const transformedNode = {
+     title: node.name, // Set the title as the 'name' property of the node
+     key: key, // Use the generated key
+     isLeaf: node.children && node.children.length === 0, // Mark as leaf if no children
+   };
+
+   // If the node has children, recursively convert them
+   if (node.children && node.children.length > 0) {
+     transformedNode.children = node.children.map(
+       (child) => convert(child, key) // Recursively process each child
+     );
+   }
+
+   return transformedNode;
+ };
+
 
   const formatTreeData = (categories) => ({
     name: "Categories",
@@ -205,7 +292,7 @@ const CategoryTree = () => {
     setCategoryName("");
     setCategoryNameNew("");
     setFile(null);
-    setPreviewImage(null); // Reset preview image
+    setPreviewImage(null);
     setParentId("");
     setSelectedCategory(null);
   };
@@ -318,28 +405,16 @@ const CategoryTree = () => {
 
         <div className="w-3/4 p-4">
           <Tree
-            data={treeData}
-            orientation="vertical"
-            // renderCustomNodeElement={(rd3tProps) => {
-            //   const { nodeDatum, toggleNode } = rd3tProps;
-            //   return (
-            //     <g>
-            //       <circle
-            //         r="15"
-            //         onClick={() => handleNodeClick(nodeDatum)}
-            //         fill="lightblue"
-            //       />
-            //       <text
-            //         x="20"
-            //         y="5"
-            //         onClick={() => handleNodeClick(nodeDatum)}
-            //         style={{ cursor: "pointer" }}
-            //       >
-            //         {nodeDatum.name}
-            //       </text>
-            //     </g>
-            //   );
-            // }}
+            className="draggable-tree" 
+            multiple
+            draggable
+            defaultExpandAll
+            showIcon={false}
+            onDragEnter={onDragEnter}
+            onDrop={onDrop}
+            onSelect={onSelect}
+            onExpand={onExpand}
+            treeData={treeData?.children?.map((child) => convert(child))}
           />
         </div>
       </div>
