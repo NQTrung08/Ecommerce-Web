@@ -7,7 +7,7 @@ import light from "@assets/logo_light.svg";
 import dark from "@assets/logo_dark.svg";
 import { NavLink } from "react-router-dom";
 
-const MainProfileInfo = ({ totalRevenueEcommerce }) => {
+const MainProfileInfo = ({ totalRevenueEcommerce, totalOrdersEcommerce }) => {
   const { theme } = useTheme();
   const { anchorEl, open, handleClick, handleClose } = useSubmenu();
 
@@ -56,9 +56,7 @@ const MainProfileInfo = ({ totalRevenueEcommerce }) => {
               </div>
               <div>
                 <p className="font-heading font-semibold leading-[1.1] text-header text-[26px] md:text-[32px]">
-                  {totalRevenueEcommerce
-                    ? totalRevenueEcommerce.newOrders
-                    : "0"}
+                  {totalOrdersEcommerce ? totalOrdersEcommerce : "0"}
                 </p>
                 <span className="label-text mb-2">Đơn hàng mới</span>
               </div>

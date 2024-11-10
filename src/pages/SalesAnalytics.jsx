@@ -11,6 +11,7 @@ import Loading from "@components/Loading";
 const SalesAnalytics = () => {
   const { width } = useWindowSize();
   const [totalRevenueEcommerce, setTotalRevenueEcommerce] = useState(null);
+  const [totalOrdersEcommerce, setTotalOrdersEcommerce] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -19,6 +20,7 @@ const SalesAnalytics = () => {
       try {
         const data = await getProfitForAdmin();
         setTotalRevenueEcommerce(data.totalRevenueEcommerce);
+        setTotalOrdersEcommerce(data.totalOrdersEcommerce);
       } catch (err) {
         setError("Failed to load benefit data.");
       } finally {
