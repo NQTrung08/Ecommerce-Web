@@ -38,13 +38,7 @@ export const updateCategory = async (
       formData.append("file", file);
     }
 
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    };
-
+    const config = checkToken("multipart/form-data");
     const response = await axiosInstance.put(
       `${URL_API}category/${categoryId}`,
       formData,
