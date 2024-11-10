@@ -4,6 +4,7 @@ import {
   addCategory,
   updateCategory,
   deleteCategory,
+  updateParentForCategories
 } from "../api/categorie";
 import PageHeader from "@layout/PageHeader";
 import { ToastContainer, toast } from "react-toastify";
@@ -44,62 +45,8 @@ const CategoryTree = () => {
 
   const onDragEnter = (info) => {
     console.log(info);
-    
+
   };
- const onDrop = (info) => {
-   // Ensure treeData is an array before proceeding
-   if (!Array.isArray(treeData)) {
-     console.error("treeData is not an array! Defaulting to empty array.");
-     setTreeData([]); // Default to an empty array if treeData is not an array
-     return;
-   }
-
-   console.log("infoinfoinfoinfo", info);
-   const dropKey = info.node.key;
-   const dragKey = info.dragNode.key;
-   const dropPos = info.node.pos.split("-");
-   const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
-
-   const loop = (data, key, callback) => {
-     for (let i = 0; i < data.length; i++) {
-       if (data[i].key === key) {
-         return callback(data[i], i, data);
-       }
-       if (data[i].children) {
-         loop(data[i].children, key, callback);
-       }
-     }
-   };
-
-   const data = JSON.parse(JSON.stringify(treeData));
-
-   let dragObj;
-   loop(data, dragKey, (item, index, arr) => {
-     arr.splice(index, 1);
-     dragObj = item;
-   });
-
-   if (!info.dropToGap) {
-     loop(data, dropKey, (item) => {
-       item.children = item.children || [];
-       item.children.unshift(dragObj);
-     });
-   } else {
-     let ar = [];
-     let i;
-     loop(data, dropKey, (_item, index, arr) => {
-       ar = arr;
-       i = index;
-     });
-     if (dropPosition === -1) {
-       ar.splice(i, 0, dragObj);
-     } else {
-       ar.splice(i + 1, 0, dragObj);
-     }
-   }
-
-   setTreeData(data);
- };
 
   const onSelect = (keys, info) => {
     console.log("Trigger Select", keys, info);
@@ -118,26 +65,59 @@ const CategoryTree = () => {
     }
   };
 
- const convert = (node, parentKey = "") => {
-   // Generate the key for the current node
-   const key = parentKey ? `${parentKey}-${node.id}` : node.id;
+  const convert = (node, parentKey = "") => {
+    const key = parentKey ? `${parentKey}-${node.id}` : node.id;
+    return {
+      title: node.name,
+      key: key,
+      isLeaf: node.children && node.children.length === 0,
+      children: node.children?.map((child) => convert(child, key)) || [],
+    };
+  };
 
-   // Initialize the transformed node
-   const transformedNode = {
-     title: node.name, // Set the title as the 'name' property of the node
-     key: key, // Use the generated key
-     isLeaf: node.children && node.children.length === 0, // Mark as leaf if no children
-   };
+  const onDrop = async (info) => {
+    const draggedNode = info.dragNode;
+    const targetNode = info.node;
+  
+    if (!targetNode || !draggedNode) return;
+  
+    const draggedId = draggedNode.key.split("-").pop(); // Extract dragged category id
+    const targetKeyParts = targetNode.key.split("-");
+    const newParentId = targetKeyParts.slice(0, targetKeyParts.length - 1).join("-"); // Extract new parent id
+    const newPos = targetNode.pos.split("-").pop(); // Get the drop position
+    // Thay thế chuỗi rỗng bằng null
+  const finalNewParentId = newParentId === "" ? null : newParentId;
+    try {
+      // Kiểm tra xem node mục tiêu đã mở chưa
+      if (targetNode.dragOver) {
+        // Nếu expanded = true, nghĩa là muốn làm con
+        // Cập nhật parentId của node bị kéo
+        await updateParentForCategories({
+          categoryIds: [draggedId],
+          newParentId: targetKeyParts[targetKeyParts.length - 1],
+          newIndex: newPos,
+        });
+        toast.success("Category moved as a child successfully.");
+      } else {
+        // Nếu expanded = false, nghĩa là muốn hoán đổi vị trí
+        await updateParentForCategories({
+          categoryIds: [draggedId],
+          newParentId: finalNewParentId,
+          newIndex: newPos,
+        });
+        toast.success("Category position swapped successfully.");
+      }
+  
+      // Cập nhật lại danh mục sau khi thực hiện xong
+      fetchCategories(); // Re-fetch categories after update
+    } catch (error) {
+      console.error("Error updating category:", error);
+      toast.error("Error updating category.");
+    }
+  };
+  
+   
 
-   // If the node has children, recursively convert them
-   if (node.children && node.children.length > 0) {
-     transformedNode.children = node.children.map(
-       (child) => convert(child, key) // Recursively process each child
-     );
-   }
-
-   return transformedNode;
- };
 
 
   const formatTreeData = (categories) => ({
@@ -394,8 +374,8 @@ const CategoryTree = () => {
               action === "create"
                 ? handleAdd
                 : action === "edit"
-                ? handleEdit
-                : () => setShowDeleteModal(true)
+                  ? handleEdit
+                  : () => setShowDeleteModal(true)
             }
             className="bg-blue-500 text-white p-2 w-full"
           >
@@ -405,7 +385,7 @@ const CategoryTree = () => {
 
         <div className="w-3/4 p-4">
           <Tree
-            className="draggable-tree" 
+            className="draggable-tree"
             multiple
             draggable
             defaultExpandAll

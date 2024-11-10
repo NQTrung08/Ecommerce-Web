@@ -123,3 +123,32 @@ export const categoryBuildTree = async () => {
     throw error;
   }
 };
+
+
+export const updateParentForCategories = async (
+  {
+    categoryIds,
+    newParentId,
+    newIndex
+  }
+) => {
+  try {
+    const config = checkToken("application/json");
+    const response = await axiosInstance.put(
+      `${URL_API}category/move-node`,
+      {
+        categoryIds,
+        newParentId,
+        newIndex
+      },
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch category tree", error);
+    throw error;
+  }
+};
+
+
+
