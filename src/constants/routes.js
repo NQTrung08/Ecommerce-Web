@@ -7,8 +7,6 @@ const ROUTES = [
       { name: "Sellers List", path: "/sellers-list" },
       { name: "Sellers Table", path: "/sellers-table" },
       { name: "Sellers Grid", path: "/sellers-grid" },
-      { name: "Seller Profile", path: "/seller-profile" },
-      { name: "Revenue by Period", path: "/revenue-by-period" },
     ],
   },
   {
@@ -46,12 +44,6 @@ const ROUTES = [
     name: "Customers",
     icon: "chart-user-regular",
     path: "/customers",
-  },
-  {
-    name: "Transactions",
-    icon: "money-check-dollar-pen-regular",
-    path: "/transactions",
-    qty: 279,
   },
 ];
 

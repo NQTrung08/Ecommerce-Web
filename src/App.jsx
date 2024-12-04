@@ -221,16 +221,6 @@ const App = () => {
                     }
                   />
                   <Route
-                    path="statistics"
-                    element={
-                      isAuthenticated() ? (
-                        <Statistics />
-                      ) : (
-                        <Navigate to="/login" replace />
-                      )
-                    }
-                  />
-                  <Route
                     path="reviews"
                     element={
                       isAuthenticated() ? (

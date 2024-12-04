@@ -4,11 +4,12 @@ import SubmenuTrigger from '@ui/SubmenuTrigger';
 import Timestamp from '@ui/Timestamp';
 import {NavLink} from 'react-router-dom';
 import Trend from '@ui/Trend';
-import Counter from '@components/Counter';
+// import Counter from '@components/Counter';
 
 // utils
 import {getCategory, getStatusColor, numFormatter} from '@utils/helpers';
 import dayjs from 'dayjs';
+import Counter from '@components/Counter';
 
 export const ORDERS_COLUMN_DEFS = [
     {

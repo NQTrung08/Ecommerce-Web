@@ -44,12 +44,16 @@ const MainProfileInfo = ({ totalRevenueEcommerce, totalOrdersEcommerce }) => {
               </div>
               <div>
                 <div className="font-heading font-semibold leading-[1.1] text-header text-[26px] md:text-[32px]">
-                  {totalRevenueEcommerce ? totalRevenueEcommerce.revenue : "0"}
+                  {totalRevenueEcommerce ? totalRevenueEcommerce : "0"}
                 </div>
                 <span className="label-text mb-2">Doanh thu</span>
               </div>
             </div>
-
+            {console.log(
+              "totalRevenueEcommerce.revenue",
+              totalRevenueEcommerce,
+              totalOrdersEcommerce
+            )}
             <div className="flex gap-5">
               <div className="badge-icon bg-accent">
                 <i className="icon-barcode" />

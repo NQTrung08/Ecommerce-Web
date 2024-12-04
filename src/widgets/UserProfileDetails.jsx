@@ -1,5 +1,4 @@
 import Spring from "../components/Spring";
-import ChangePasswordModal from "../components/ChangePasswordModal";
 import { useForm, Controller } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
 import { toast } from "react-toastify";

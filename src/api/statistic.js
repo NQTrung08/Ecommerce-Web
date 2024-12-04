@@ -40,23 +40,15 @@ export const getBenegitForShop = async (includeStatistics = true, year = 2024) =
   }
 };
 
-export const getShopInfoForAdmin = async (id, quantity = 1, shopId, year= 2024) => {
+export const getShopRevenue = async ({ startDate, endDate, groupBy }) => {
   const config = checkToken("application/json");
   try {
-    const url = `${URL_API}shop/admin/${shopId}?year=${year}`;
-    const result = await axiosInstance.post(
-      url,
-      {
-        productId: id,
-        quantity,
-      },
-      config
-    );
+    const url = `${URL_API}shop/revenue?startDate=${startDate}&endDate=${endDate}&groupBy=${groupBy}`;
+    const response = await axiosInstance.get(url, config);
 
-    console.log(config);
-    return result;
+    return response.data;
   } catch (error) {
-    console.error("Error adding product to cart:", error);
+    console.error("Error fetching shop revenue data:", error);
     throw error;
   }
 };
