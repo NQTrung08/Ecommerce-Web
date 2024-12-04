@@ -43,7 +43,7 @@ export const getBenegitForShop = async (includeStatistics = true, year = 2024) =
 export const getShopRevenue = async ({ startDate, endDate, groupBy }) => {
   const config = checkToken("application/json");
   try {
-    const url = `${URL_API}shop/revenue?startDate=${startDate}&endDate=${endDate}&groupBy=${groupBy}`;
+    const url = `${URL_API}shop/admin-revenue?startDate=${startDate}&endDate=${endDate}&groupBy=${groupBy}`;
     const response = await axiosInstance.get(url, config);
 
     return response.data;
