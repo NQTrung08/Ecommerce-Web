@@ -1,8 +1,6 @@
 import { checkToken } from "@utils/auth";
 import axiosInstance from "./axiosInstance";
 import { getCookie } from "@utils/cookie";
-
-// Get the base API URL from environment variables
 import { URL_API } from "../../src/config/config";
 
 export const GetOwnShop = async () => {
@@ -15,7 +13,6 @@ export const GetOwnShop = async () => {
       throw new Error("No authentication token found");
     }
 
-    // Use environment variable for the base API URL
     const response = await axiosInstance.get(`${URL_API}shop/view-own`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -68,15 +65,13 @@ export const createShop = async (formData) => {
       throw new Error("No authentication token found");
     }
 
-    // Configure headers to handle formData
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data", // Required for FormData
+        "Content-Type": "multipart/form-data", 
       },
     };
 
-    // Use environment variable for the base API URL
     const response = await axiosInstance.post(
       `${URL_API}shop/create`,
       formData,

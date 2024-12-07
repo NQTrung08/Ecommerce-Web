@@ -1,6 +1,6 @@
 import axiosInstance from "../api/axiosInstance";
 import { checkToken } from "@utils/auth";
-import { URL_API } from "../config/config";
+import { URL_API } from "../../src/config/config";
 
 export const getProfitForAdmin = async (
   page = 1,

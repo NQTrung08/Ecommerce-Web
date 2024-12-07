@@ -161,7 +161,7 @@ const CategoryTree = () => {
     console.log("File in handleAction:", file);
     if (!file && action !== "delete") {
       toast.error("No file selected.");
-      return; // Early return if file is not available
+      return; 
     }
 
     try {
@@ -186,7 +186,6 @@ const CategoryTree = () => {
     }
   };
 
-  // Reset form when modal is closed or action is handled
   const resetForm = () => {
     setCategoryName("");
     setFile(null);
@@ -195,7 +194,7 @@ const CategoryTree = () => {
 
   return (
     <div>
-      <PageHeader title="Category Management" />
+      <PageHeader title="Quản lý danh mục" />
       <ToastContainer />
 
       <div className="w-full p-4">
@@ -213,20 +212,19 @@ const CategoryTree = () => {
         />
       </div>
 
-      {/* Modal for create/edit/delete actions */}
       <Modal
         title={`${action.charAt(0).toUpperCase() + action.slice(1)} Category`}
         open={showActionModal}
         onOk={handleAction}
         onCancel={() => {
           setShowActionModal(false);
-          resetForm(); // Reset form on cancel
+          resetForm();
         }}
         okText={action === "delete" ? "Delete" : "Save"}
         cancelText="Cancel"
         style={{
-          top: "50%", // Position the modal vertically in the center
-          transform: "translateY(-50%) translateX(70%)", // Adjust the modal to truly center it
+          top: "50%", 
+          transform: "translateY(-50%) translateX(70%)", 
         }}
       >
         {action !== "delete" && (
@@ -237,11 +235,8 @@ const CategoryTree = () => {
               placeholder="Category Name"
               className="mb-2"
             />
-            <Upload
-              beforeUpload={() => false} 
-              onChange={handleFileChange}
-            >
-              <Button>Upload Image</Button>
+            <Upload beforeUpload={() => false} onChange={handleFileChange}>
+              <Button>Tải hình ảnh</Button>
             </Upload>
             {previewImage && (
               <img
@@ -252,9 +247,7 @@ const CategoryTree = () => {
             )}
           </>
         )}
-        {action === "delete" && (
-          <p>Are you sure you want to delete this category?</p>
-        )}
+        {action === "delete" && <p>Bạn có chắc chắn muốn xóa danh mục này?</p>}
       </Modal>
     </div>
   );

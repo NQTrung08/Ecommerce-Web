@@ -1,50 +1,43 @@
 const ROUTES = [
   {
-    name: "Dashboard",
+    name: "Bảng điều khiển",
     icon: "rectangle-history-circle-user-regular",
     links: [
-      { name: "Sales Analytics", path: "/" },
-      { name: "Sellers List", path: "/sellers-list" },
-      { name: "Sellers Table", path: "/sellers-table" },
-      { name: "Sellers Grid", path: "/sellers-grid" },
+      { name: "Phân tích doanh số", path: "/" },
+      { name: "Danh sách người bán", path: "/sellers-list" },
+      { name: "Bảng người bán", path: "/sellers-table" },
+      { name: "Lưới người bán", path: "/sellers-grid" },
     ],
   },
   {
-    name: "Products",
+    name: "Sản phẩm",
     icon: "boxes-stacked-regular",
     links: [
-      { name: "Top Products", path: "/top-products" },
-      { name: "Products Grid", path: "/products-grid" },
-      { name: "Products Management", path: "/products-management" },
-      { name: "Product Editor", path: "/product-editor" },
-      { name: "Banners", path: "/banners" },
+      { name: "Sản phẩm hàng đầu", path: "/top-products" },
+      { name: "Quản lý sản phẩm", path: "/products-management" },
+      { name: "Trình chỉnh sửa sản phẩm", path: "/product-editor" },
     ],
   },
   {
-    name: "Categories",
+    name: "Danh mục",
     icon: "folder-open",
     path: "/categories",
   },
   {
-    name: "Orders",
+    name: "Đơn hàng",
     icon: "cart-shopping-regular",
     path: "/orders",
   },
   {
-    name: "Statistics",
-    icon: "chart-simple-regular",
-    path: "/statistics",
-  },
-  {
-    name: "Reviews",
+    name: "Đánh giá",
     icon: "star-half-stroke-solid",
     path: "/reviews",
   },
   {
-    name: "Customers",
+    name: "Khách hàng",
     icon: "chart-user-regular",
     path: "/customers",
   },
 ];
 
-export default ROUTES
+export default ROUTES;

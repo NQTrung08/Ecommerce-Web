@@ -1,7 +1,6 @@
-import axiosInstance from "@api/axiosInstance";
-import { checkToken } from "@utils/auth";
+import axiosInstance from "../api/axiosInstance";
+import { checkToken } from "../utils/auth";
 
-// Get the base API URL from environment variables
 import { URL_API } from "../../src/config/config";
 
 export const createOrder = async (
@@ -31,7 +30,6 @@ export const createOrder = async (
 
 export const getCategories = async () => {
   try {
-    // Use the environment variable for the base API URL
     const response = await axiosInstance.get(`${URL_API}category`);
     return response.data;
   } catch (error) {
@@ -72,6 +70,22 @@ export const deleteOrderById = async (orderId) => {
     return result;
   } catch (error) {
     console.error("Error cancelling order:", error);
+    throw error;
+  }
+};
+
+export const updateOrderStatus = async (orderId, newStatus) => {
+  try {
+    const config = checkToken("application/json");
+    console.log("Config for headers:", config);
+    const response = await axiosInstance.put(
+      `${URL_API}order/${orderId}?status=${newStatus}`,
+      {},
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update order status", error);
     throw error;
   }
 };

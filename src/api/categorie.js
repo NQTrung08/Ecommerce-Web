@@ -2,7 +2,6 @@ import axiosInstance from "./axiosInstance";
 import { URL_API } from "../../src/config/config";
 import { checkToken } from "@utils/auth";
 
-// Create a new category with a file upload, parent_id, and category_name
 export const addCategory = async (parent_id, category_name, file) => {
   try {
     const formData = new FormData();
@@ -66,7 +65,6 @@ export const deleteCategory = async (categoryId) => {
   }
 };
 
-// Existing createCategories function (if needed for another purpose)
 export const createCategories = async () => {
   try {
     const response = await axiosInstance.post(`${URL_API}category/create`);
@@ -77,7 +75,6 @@ export const createCategories = async () => {
   }
 };
 
-// Fetch all categories
 export const getCategories = async () => {
   try {
     const response = await axiosInstance.get(`${URL_API}category`);
@@ -88,7 +85,6 @@ export const getCategories = async () => {
   }
 };
 
-// Fetch statistical data for categories, with sorting options
 export const statisticCategoryForAdmin = async (sortBy, order) => {
   try {
     const config = checkToken("application/json");
@@ -103,7 +99,6 @@ export const statisticCategoryForAdmin = async (sortBy, order) => {
   }
 };
 
-// Build a category tree structure
 export const categoryBuildTree = async () => {
   try {
     const config = checkToken("application/json");

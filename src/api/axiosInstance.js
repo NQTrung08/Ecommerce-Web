@@ -9,7 +9,6 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   async (config) => {
-    // You can add custom logic here if needed
     return config;
   },
   (error) => Promise.reject(error)
