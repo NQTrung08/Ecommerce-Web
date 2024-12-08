@@ -1,65 +1,107 @@
 // components
-import PageHeader from '@layout/PageHeader';
-import CalendarSelector from '@components/CalendarSelector';
-import PopularTags from '@components/PopularTags';
-import SellerProfilePreview from '@widgets/SellerProfilePreview';
-import TransactionsInfobox from '@widgets/TransactionsInfobox';
-import SaleActivity from '@widgets/SaleActivity';
-import SalesProfitByCategory from '@widgets/SalesProfitByCategory';
-import PeriodSalesRevenue from '@widgets/PeriodSalesRevenue';
-import SellerProfileInfobox from '@components/SellerProfileInfobox';
-import WalletBadge from '@widgets/WalletBadge';
+import PageHeader from "@layout/PageHeader";
+import CalendarSelector from "@components/CalendarSelector";
+import SellerProfilePreview from "@widgets/SellerProfilePreview";
+import SalesProfitByCategory from "@widgets/SalesProfitByCategory";
+import PeriodSalesRevenue from "@widgets/PeriodSalesRevenue";
+import SellerProfileInfobox from "@components/SellerProfileInfobox";
 
 // hooks
-import {useWindowSize} from 'react-use';
+import { useWindowSize } from "react-use";
+import { useParams } from "react-router-dom";
+import Loading from "@components/Loading";
+import { useEffect, useState } from "react";
+import { getRevenueByShopId } from "../api/statistic";
+import { statisticCategoryForShop } from "../api/categorie";
 
-// assets
-import credit from '@assets/credit-card.webp';
-import wallet from '@assets/wallet.webp';
-
-const Boxes = ({wrapperClass}) => {
-    return (
-        <div className={`grid w-full grid-cols-1 gap-5 md:grid-cols-3 md:gap-[26px] ${wrapperClass || ''}`}>
-            <SellerProfileInfobox value={23400} label="Income"/>
-            <SellerProfileInfobox icon="barcode" color="green" value={234} label="New Orders" withCurrency={false}/>
-            <SellerProfileInfobox icon="tax" color="red" value={123} label="Expense"/>
-        </div>
-    )
-}
+const Boxes = ({ wrapperClass, dataTotalRevenue, dataTotalOrders }) => {
+  return (
+    <div className={`grid w-full grid-cols-2 gap-5`}>
+      <SellerProfileInfobox value={dataTotalRevenue} label="Tổng lợi nhuận" />
+      <SellerProfileInfobox
+        icon="barcode"
+        color="green"
+        value={dataTotalOrders}
+        label="Tổng đơn hàng"
+        withCurrency={false}
+      />
+    </div>
+  );
+};
 
 const SellerProfile = () => {
-    const {width} = useWindowSize();
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [dataTotalRevenue, setTotalRevenueData] = useState([]);
+  const [dataTotalOrders, setTotalOrdersData] = useState([]);
+  const [revenueData, setRevenueData] = useState([]);
+  const [statisticCategory, setStatisticCategory] = useState([]);
 
-    return (
-        <>
-            <PageHeader title="Seller Profile Details"/>
-            <div className="flex flex-col gap-4 mb-5 md:mb-[26px] md:gap-5 lg:flex-row lg:justify-between">
-                <CalendarSelector wrapperClass="md:max-w-[275px]" id="sellerPeriodSelector"/>
-                <PopularTags/>
-            </div>
-            <div className="widgets-grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-6">
-                <SellerProfilePreview/>
-                <TransactionsInfobox/>
-                <div className="widgets-grid grid-cols-1 md:col-span-3 md:grid-cols-2">
-                    <SaleActivity/>
-                    <div className="widgets-grid grid-cols-1">
-                        <WalletBadge label="Total Expense" value={32100} image={credit}/>
-                        <WalletBadge label="Total Profit" value={144100} image={wallet}/>
-                    </div>
-                </div>
-                <div className="widgets-grid grid-cols-1 md:col-span-3 lg:grid-cols-2 2xl:col-span-6">
-                    <PeriodSalesRevenue/>
-                    <div className="widgets-grid grid-cols-1">
-                        <SalesProfitByCategory/>
-                        {
-                            (width < 1024 || width >= 1440) && <Boxes/>
-                        }
-                    </div>
-                </div>
-                {(width >= 1024 && width < 1440) && <Boxes wrapperClass="col-span-3"/>}
-            </div>
-        </>
-    )
-}
+  const [selectedDates, setSelectedDates] = useState({
+    startDate: "2023-01-01",
+    endDate: "2024-12-31",
+  });
 
-export default SellerProfile
+  const fetchData = async (startDate, endDate) => {
+    try {
+      setLoading(true);
+      const revenueData = await getRevenueByShopId({
+        id,
+        startDate,
+        endDate,
+        groupBy: "month",
+      });
+
+      const statisticCategory = await statisticCategoryForShop(id);
+
+      setStatisticCategory(statisticCategory);
+      setRevenueData(revenueData.breakdown);
+      setTotalRevenueData(revenueData.totalRevenue);
+      setTotalOrdersData(revenueData.totalOrders);
+    } catch (error) {
+      setError("Failed to fetch revenue data.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(selectedDates.startDate, selectedDates.endDate);
+  }, [selectedDates]);
+
+  const handleDateChange = ({ startDate, endDate }) => {
+    setSelectedDates({ startDate, endDate });
+  };
+
+  if (loading) return <Loading />;
+  if (error) return <div>{error}</div>;
+
+  return (
+    <>
+      <PageHeader title="Chi tiết hồ sơ người bán" />
+      <div className="flex flex-col gap-4 mb-5 md:mb-[26px] md:gap-5 lg:flex-row lg:justify-between">
+        <CalendarSelector
+          wrapperClass="md:max-w-[275px]"
+          id="sellerPeriodSelector"
+          onDateChange={handleDateChange}
+        />
+      </div>
+      <div className="widgets-grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-6">
+        <div className="widgets-grid grid-cols-1 md:col-span-3 lg:grid-cols-2 2xl:col-span-6">
+          <PeriodSalesRevenue revenueData={revenueData} />
+          <div className="widgets-grid grid-cols-1">
+            <Boxes
+              dataTotalRevenue={dataTotalRevenue}
+              dataTotalOrders={dataTotalOrders}
+            />
+            <SalesProfitByCategory statisticCategory={statisticCategory} />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default SellerProfile;

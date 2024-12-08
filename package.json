@@ -37,6 +37,7 @@
     "install": "^0.13.0",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
+    "lodash": "^4.17.21",
     "npm": "^10.9.0",
     "polished": "^4.2.2",
     "prop-types": "^15.8.1",

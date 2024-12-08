@@ -71,7 +71,7 @@ const Customers = () => {
   // Render bảng
   return (
     <>
-      <PageHeader title="Khách hàng" />
+      <PageHeader title="Người dùng" />
       <div className="container mx-auto my-6 bg-white rounded-lg ">
         {loading ? (
           <Loader />

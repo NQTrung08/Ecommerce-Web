@@ -9,13 +9,9 @@ import Counter from '@components/Counter';
 // hooks
 import {useTheme} from '@contexts/themeContext';
 
-// constants
 import MAP_THEME from '@constants/map-theme';
-
-// utils
 import {numFormatter} from '@utils/helpers';
 
-// paste your Google map key here as a string or get it from .env.local file
 const MAP_KEY = import.meta.env.VITE_MAP_KEY;
 
 const coords = {lat: 40.73936818014904, lng: -73.44753952002102};
@@ -52,6 +48,9 @@ const SellerListItem = ({ seller, index }) => {
     return total ? (value / total) * 100 : 0;
   };
 
+  console.log("getPercentage", seller)
+  const colors = ["accent", "red", "green", "yellow", "header"];
+
   return (
     <Spring
       className="card flex flex-col gap-5 md:gap-[26px] xl:flex-row xl:justify-between"
@@ -67,17 +66,17 @@ const SellerListItem = ({ seller, index }) => {
                 alt={seller.name}
               />
             </div>
-            <NavLink className="btn btn--primary" to="/seller-profile">
-              Profile
+            <NavLink
+              className="btn btn--primary"
+              to={`/seller-profile/${seller.id}`}
+            >
+              Hồ sơ
             </NavLink>
           </div>
           <div>
             <h3 className="truncate max-w-[220px] xs:max-w-[260px] md:max-w-full xl:max-w-[218px]">
               {seller.name}
             </h3>
-            <a className="text-btn my-3" href={seller.website}>
-              www.website.com
-            </a>
             <div className="flex flex-col items-start gap-2.5">
               <p className="max-w-[220px]">{seller.address}</p>
               <a
@@ -99,9 +98,9 @@ const SellerListItem = ({ seller, index }) => {
           {MAP_KEY && <Map coords={coords} />}
         </div>
       </div>
-      <div className="grid flex-1 grid-cols-1 gap-5 md:grid-cols-[minmax(0,200px)_,minmax(0,1fr)]">
+      <div className=" flex flex-row gap-5">
         <div className="flex flex-col gap-5">
-          <div>
+          <div className="w-[300px]">
             <h5 className="mb-2.5">Thống kê:</h5>
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
@@ -133,27 +132,29 @@ const SellerListItem = ({ seller, index }) => {
             <RatingStars rating={seller.rating} />
           </div>
         </div>
-        <div>
+        <div className="max-w-[300px] flex flex-row">
           <h5 className="mb-2.5 xl:hidden 2xl:block">
             Lợi nhuận bán hàng theo danh mục:
           </h5>
-          <h5 className="mb-2.5 hidden xl:block 2xl:hidden">Lợi nhuận:</h5>
-          <div className="flex flex-col gap-4">
-            {seller.profit.map((category) => (
-              <LabeledProgressBar
-                key={category._id}
-                wrapperClass="!gap-0"
-                label={category.categoryName}
-                value={getPercentage(
-                  category.totalRevenue | category.totalProducts
-                )}
-                displayValue={numFormatter(
-                  category.totalRevenue | category.totalProducts,
-                  2
-                )}
-                color="accent"
-              />
-            ))}
+          <div className="flex flex-col w-[300px]">
+            <h5 className="mb-2.5 hidden xl:block 2xl:hidden">Lợi nhuận:</h5>
+            <div className="flex flex-col gap-4">
+              {seller.profit.slice(0, 4).map((category, index) => (
+                <LabeledProgressBar
+                  key={category._id}
+                  wrapperClass="!gap-0"
+                  label={category.categoryName}
+                  value={getPercentage(
+                    category.totalRevenue | category.totalProducts
+                  )}
+                  displayValue={numFormatter(
+                    category.totalRevenue | category.totalProducts,
+                    2
+                  )}
+                  color={colors[index]}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -151,7 +151,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path="seller-profile"
+                    path="seller-profile/:id"
                     element={
                       isAuthenticated() ? (
                         <SellerProfile />

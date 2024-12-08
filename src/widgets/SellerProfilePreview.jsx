@@ -21,6 +21,7 @@ const SellerProfilePreview = ({ sellerIndex = 3 }) => {
 
   if (!seller) return null; 
 
+  console.log("seller", seller);
   return (
     <Spring className="card !p-5 flex flex-col gap-5 md:flex-row md:items-center md:gap-10 md:col-span-2">
       <div className="img-wrapper h-[137px] flex justify-center items-center md:w-[168px] shrink-0">

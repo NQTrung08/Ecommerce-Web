@@ -1,43 +1,49 @@
-import { statisticCategoryForShop } from "api/categorie";
+import { getReviewForShop } from "../api/review";
+import { statisticCategoryForShop } from "../api/categorie";
 import { GetAllShopForAdmin } from "../api/shop";
 
-let Sellers = []; 
+let Sellers = [];
 
-// Function to fetch and update Sellers data
 const fetchSellers = async () => {
   try {
     const fetchedSellers = await GetAllShopForAdmin();
-    const fetchedstatisticCategory = await statisticCategoryForShop();
-    console.log("Fetched sellers from DB:", fetchedSellers);
-    // Update Sellers with the latest data
-    Sellers = fetchedSellers.shops.map((seller) => ({
+    if (!fetchedSellers || !fetchedSellers.shops) {
+      console.error("No shops data received");
+      return;
+    }
+
+    const statisticCategories = await Promise.all(
+      fetchedSellers.shops.map((shop) => statisticCategoryForShop(shop._id))
+    );
+
+    const reviewForShop = await Promise.all(
+      fetchedSellers.shops.map((shop) => getReviewForShop(shop._id))
+    );
+    console.log("reviewForShop", reviewForShop);
+
+    Sellers = fetchedSellers.shops.map((seller, index) => ({
       id: seller._id,
       logo: seller.logo,
       name: seller.shop_name,
-      website: "",
+      website: seller.website || "",
       address: seller.address,
       phone: seller.phone_number,
-      email: `${seller.owner_id.userName}@gmail.com`,
+      email: `${seller.owner_id.userName
+        .toLowerCase()
+        .replace(/\s+/g, "")}@gmail.com`,
       rating: Math.floor(Math.random() * 5) + 1,
-      profit: {
-        electronics: Math.floor(Math.random() * 10000),
-        fashion: Math.floor(Math.random() * 10000),
-        food: Math.floor(Math.random() * 10000),
-        services: Math.floor(Math.random() * 10000),
-      },
+      profit: statisticCategories[index] || [],
       sales: Math.floor(Math.random() * 100000),
+      totalOrdersEcommerce: seller.order_count,
+      totalRevenueEcommerce: seller.total_revenue,
     }));
-
-    console.log("Updated Sellers array:", Sellers);
   } catch (error) {
-    console.error("Error fetching sellers data:", error);
+    console.error("Error fetching sellers or statistics:", error);
   }
 };
 
-// Trigger initial fetch
 fetchSellers();
 
-// Getter function to get the current Sellers array
 const getSellers = () => Sellers;
 
 export { fetchSellers };

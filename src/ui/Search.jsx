@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const Search = ({placeholder = 'Search...', query, setQuery, wrapperClass}) => {
+const Search = ({placeholder = 'Tìm kiếm...', query, setQuery, wrapperClass}) => {
     return (
         <div className={`relative ${wrapperClass || ''}`}>
             <input className="field-input !pr-[60px]"

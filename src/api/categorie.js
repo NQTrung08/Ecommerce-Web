@@ -139,11 +139,11 @@ export const updateParentForCategories = async (
   }
 };
 
-export const statisticCategoryForShop = async () => {
+export const statisticCategoryForShop = async (id) => {
   try {
     const config = checkToken("application/json");
     const response = await axiosInstance.get(
-      `${URL_API}category/statistical/shop`,
+      `${URL_API}category/statistical/shop/${id}`,
       config
     );
     return response.data;

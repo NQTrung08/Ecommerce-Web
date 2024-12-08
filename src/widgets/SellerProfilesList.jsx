@@ -14,36 +14,58 @@ import { SELLER_SORT_OPTIONS } from "@constants/options";
 // API function
 import { GetAllShopForAdmin } from "../api/shop";
 import { statisticCategoryForShop } from "../api/categorie";
+import { getReviewForShop } from "../api/review";
 
 const SellerProfilesList = () => {
-  const [sellers, setSellers] = useState([]); 
+  const [sellers, setSellers] = useState([]);
   const [sort, setSort] = useState(SELLER_SORT_OPTIONS[0]);
   const pagination = usePagination(sellers, 4);
 
-  // Fetch sellers data on component mount
   useEffect(() => {
     const getSellers = async () => {
-      const fetchedSellers = await GetAllShopForAdmin();
-      const statisticCategory = await statisticCategoryForShop();
+      try {
+        const fetchedSellers = await GetAllShopForAdmin();
+        if (!fetchedSellers || !fetchedSellers.shops) {
+          console.error("No shops data received");
+          return;
+        }
 
-   const transformedSellers = fetchedSellers.shops.map((seller) => ({
-     id: seller._id,
-     logo: seller.logo, // Use the logo directly from the API
-     name: seller.shop_name, // Map shop_name to name
-     website: seller.website || "", // Use website if available, otherwise an empty string
-     address: seller.address, // Map address directly
-     phone: seller.phone_number, // Map phone_number directly
-     email: `${seller.owner_id.userName
-       .toLowerCase()
-       .replace(/\s+/g, "")}@gmail.com`, // Generate email based on userName
-     rating: Math.floor(Math.random() * 5) + 1, // Random rating between 1 and 5
-     profit: statisticCategory,
-     sales: Math.floor(Math.random() * 100000), // Random sales value
-     totalOrdersEcommerce: seller.order_count, // Total orders from the API's root object
-     totalRevenueEcommerce: seller.total_revenue, // Total revenue from the API's root object
-   }));
+        // Fetch statistics for each shop
+        const statisticCategories = await Promise.all(
+          fetchedSellers.shops.map((shop) => statisticCategoryForShop(shop._id))
+        );
 
-      setSellers(transformedSellers); 
+        const reviewForShop = await Promise.all(
+          fetchedSellers.shops.map((shop) => getReviewForShop(shop._id))
+        );
+        const transformedSellers = fetchedSellers.shops.map((seller, index) => {
+          const reviews = reviewForShop[index];
+          const averageRating = reviews.length
+            ? reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length
+            : 0; // If no reviews, rating is 0
+
+          return {
+            id: seller._id,
+            logo: seller.logo,
+            name: seller.shop_name,
+            website: seller.website || "",
+            address: seller.address,
+            phone: seller.phone_number,
+            email: `${seller.owner_id.userName
+              .toLowerCase()
+              .replace(/\s+/g, "")}@gmail.com`,
+            rating: Math.floor(averageRating),
+            profit: statisticCategories[index] || [],
+            sales: Math.floor(Math.random() * 100000),
+            totalOrdersEcommerce: seller.order_count,
+            totalRevenueEcommerce: seller.total_revenue,
+          };
+        });
+
+        setSellers(transformedSellers);
+      } catch (error) {
+        console.error("Error fetching sellers or statistics:", error);
+      }
     };
 
     getSellers();
@@ -53,13 +75,14 @@ const SellerProfilesList = () => {
     pagination.goToPage(0);
   }, [sort]);
 
+  console.log("sellers", sellers);
   return (
     <>
       <div className="flex flex-col gap-4 mb-5 md:flex-row md:mb-[26px] justify-between">
         <CalendarSelector wrapperClass="md:max-w-[275px]" id="sellerList" />
         <div className="flex flex-col-reverse gap-2.5 md:flex-col md:min-w-[220px]">
           <p className="md:text-right">
-            View profiles: {pagination.showingOf()}
+            Xem hồ sơ:{pagination.showingOf()}
           </p>
           <Select
             value={sort}

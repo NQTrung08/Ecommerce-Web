@@ -4,11 +4,11 @@ import SellerProfilesList from '@widgets/SellerProfilesList';
 
 const SellersList = () => {
     return (
-        <>
-            <PageHeader title="Seller Profiles"/>
-            <SellerProfilesList/>
-        </>
-    )
+      <>
+        <PageHeader title="Hồ sơ người bán" />
+        <SellerProfilesList />
+      </>
+    );
 }
 
 export default SellersList

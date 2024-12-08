@@ -70,12 +70,12 @@ const MainProfileInfo = ({ totalRevenueEcommerce, totalOrdersEcommerce }) => {
       </div>
       <Submenu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <div className="flex flex-col items-start gap-5 p-5">
-          <NavLink className="menu-btn subheading-2" to="/seller-profile">
+          {/* <NavLink className="menu-btn subheading-2" to="/seller-profile">
             <span className="icon-wrapper">
               <i className="icon icon-chart-pie-solid" />
             </span>
             Xem Hồ sơ
-          </NavLink>
+          </NavLink> */}
           <button className="menu-btn subheading-2">
             <span className="icon-wrapper">
               <i className="icon icon-link-solid" />

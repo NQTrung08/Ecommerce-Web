@@ -64,7 +64,7 @@ const SellersProfileTable = () => {
         <CalendarSelector wrapperClass="md:max-w-[275px]" id="salesPeriod" />
         <div className="flex flex-col-reverse gap-2.5 md:flex-col md:min-w-[220px]">
           <p className="md:text-right">
-            View profiles: {pagination.showingOf()}
+            Xem hồ sơ:{pagination.showingOf()}
           </p>
           <Select
             options={SELLER_SORT_OPTIONS}

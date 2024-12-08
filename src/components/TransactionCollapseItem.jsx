@@ -6,22 +6,23 @@ import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import {getStatusColor} from '@utils/helpers';
 
-const TransactionCollapseItem = ({transaction, activeCollapse, handleCollapse}) => {
+const TransactionCollapseItem = ({ transaction, activeCollapse, handleCollapse }) => {
+    console.log("transaction", transaction);
     return (
         <div className="card">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-[18px]">
                     <div
                         className="img-wrapper w-[40px] h-[40px] flex items-center justify-center shrink-0">
-                        <img className="max-w-[30px]" src={transaction.seller.logo} alt={transaction.seller.name}/>
+                        <img className="max-w-[30px]" src={transaction?.seller?.logo} alt={transaction?.seller?.name}/>
                     </div>
-                    <span className="h6 hidden truncate xs:inline">{transaction.seller.name}</span>
+                    <span className="h6 hidden truncate xs:inline">{transaction?.seller?.name}</span>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">
-                    <p className="text-sm font-medium">{dayjs(transaction.timestamp).format('DD.MM.YY, hh:mm')}</p>
-                    <button className={`collapse-btn ${activeCollapse === transaction.sku ? 'active' : ''}`}
+                    <p className="text-sm font-medium">{dayjs(transaction?.timestamp).format('DD.MM.YY, hh:mm')}</p>
+                    <button className={`collapse-btn ${activeCollapse === transaction?.sku ? 'active' : ''}`}
                             aria-label="Toggle view"
-                            onClick={() => handleCollapse(transaction.sku)}>
+                            onClick={() => handleCollapse(transaction?.sku)}>
                         <i className="icon icon-caret-down-solid"/>
                     </button>
                 </div>

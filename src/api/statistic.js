@@ -53,3 +53,16 @@ export const getShopRevenue = async ({ startDate, endDate, groupBy }) => {
   }
 };
 
+export const getRevenueByShopId = async ({id, startDate, endDate, groupBy }) => {
+  const config = checkToken("application/json");
+  try {
+    const url = `${URL_API}shop/revenue/${id}?startDate=${startDate}&endDate=${endDate}&groupBy=${groupBy}`;
+    const response = await axiosInstance.get(url, config);
+
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching shop revenue data:", error);
+    throw error;
+  }
+};
+

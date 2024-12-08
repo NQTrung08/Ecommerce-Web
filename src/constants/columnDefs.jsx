@@ -103,86 +103,49 @@ export const ORDERS_COLUMN_DEFS = [
 ];
 
 export const TRANSACTIONS_COLUMN_DEFS = [
-    {
-        title: 'Date & Time',
-        dataIndex: 'timestamp',
-        render: timestamp => <Timestamp date={timestamp}/>,
+  {
+    title: "ID",
+    dataIndex: "transactionNo",
+    responsive: ["lg"],
+  },
+  {
+    title: "Phương thức",
+    dataIndex: "method",
+    responsive: ["lg"],
+  },
+  {
+    title: "Order id",
+    dataIndex: "order_id",
+    render: (order_id) => <span className="capitalize">{order_id}</span>,
+  },
+  {
+    title: "Trạng thái",
+    dataIndex: "status",
+    render: (status) => (
+      <span
+        className="badge-status"
+        style={{ backgroundColor: `var(--${getStatusColor(status)})` }}
+      >
+        {status}
+      </span>
+    ),
+  },
+  {
+    title: "Tổng",
+    dataIndex: "amount",
+    render: (amount) => {
+      return (
+        <span className="font-heading font-semibold text-header">
+          {amount} VND
+        </span>
+      );
     },
-    {
-        title: 'Seller',
-        dataIndex: 'seller',
-        render: (text, record) => {
-            return (
-                <>
-                    {
-                        record.seller ?
-                            <div className="flex items-center gap-[18px]">
-                                <div
-                                    className="img-wrapper w-[60px] h-[60px] flex items-center justify-center shrink-0">
-                                    <img className="max-w-[50px]" src={record.seller.logo} alt={record.seller.name}/>
-                                </div>
-                                <span className="hidden truncate lg:inline">{record.seller.name}</span>
-                            </div>
-                            :
-                            'N/A'
-                    }
-                </>
-            )
-        }
-
-    },
-    {
-        title: 'SKU',
-        dataIndex: 'sku',
-        responsive: ['lg'],
-    },
-    {
-        title: 'Method',
-        dataIndex: 'method',
-        responsive: ['xxl'],
-    },
-    {
-        title: 'Type',
-        dataIndex: 'type',
-        render: type => <span className="capitalize">{type}</span>
-    },
-    {
-        title: 'Status',
-        dataIndex: 'status',
-        render: status =>
-            <span className="badge-status" style={{backgroundColor: `var(--${getStatusColor(status)})`}}>
-                {status}
-            </span>
-    },
-    {
-        title: 'Country',
-        dataIndex: 'country',
-        responsive: ['xxl'],
-    },
-    {
-        title: 'Curr',
-        dataIndex: 'currency',
-        responsive: ['xl'],
-    },
-    {
-        title: 'Fee',
-        dataIndex: 'fee',
-        responsive: ['xl'],
-    },
-    {
-        title: 'Tax',
-        dataIndex: 'tax',
-        responsive: ['xl'],
-    },
-    {
-        title: 'Total',
-        dataIndex: 'total',
-        render: (text, record) => {
-            const total = record.fee - (record.fee / 100 * record.tax);
-
-            return <span className="font-heading font-semibold text-header">${total.toFixed(2)}</span>
-        }
-    }
+  },
+  {
+    title: "Ngày & Giờ",
+    dataIndex: "timestamp",
+    render: (timestamp) => <Timestamp date={timestamp} />,
+  },
 ];
 
 export const SELLERS_COLUMN_DEFS = [
