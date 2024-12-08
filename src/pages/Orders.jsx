@@ -13,6 +13,7 @@ const Orders = () => {
   const [category, setCategory] = useState(PRODUCT_CATEGORIES[0]);
   const [sort, setSort] = useState(ORDER_SORT_OPTIONS[0]);
   const [orders, setOrders] = useState([]);
+  const [AllOrders, setAllOrders] = useState([]);
   const [loading, setLoader] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("pending");
@@ -33,7 +34,9 @@ const Orders = () => {
       setLoader(true);
       try {
         const data = await getAllOrder(activeTab);
+        const allData = await getAllOrder();
         setOrders(data);
+        setAllOrders(allData);
       } catch (error) {
         console.error("Error fetching orders:", error);
         setError("Không thể tải đơn hàng. Vui lòng thử lại.");
@@ -54,9 +57,20 @@ const Orders = () => {
   );
 
   // Count orders by status
-  const countOrdersByStatus = (status) => {
-    return orders.filter((order) => order.status === status).length;
-  };
+ const countOrdersByStatus = (status) => {
+   return AllOrders.filter((order) => order.order_status === status) // Lọc các đơn hàng có trạng thái phù hợp
+     .reduce((total, order) => {
+       // Tính tổng số lượng sản phẩm trong các đơn hàng đã lọc
+       return (
+         total +
+         order.order_products.reduce(
+           (productTotal, product) => productTotal + product.quantity,
+           0
+         )
+       );
+     }, 0);
+ };
+
 
   const renderStatusTabs = () =>
     orderStatuses.map((status) => (
@@ -73,6 +87,7 @@ const Orders = () => {
       </button>
     ));
 
+  console.log("first", AllOrders, countOrdersByStatus("completed"));
   // Render the infobox widgets with dynamic counts
   const renderInfoboxWidgets = () => (
     <div className="widgets-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:col-span-4">
@@ -80,6 +95,12 @@ const Orders = () => {
         title="Hoàn thành"
         count={countOrdersByStatus("completed")}
         icon={<i className="icon-check-to-slot-solid" />}
+      />
+      <OrdersInfobox
+        title="Chờ xác nhận"
+        count={countOrdersByStatus("confirmed")}
+        color="badge-status-bg"
+        icon={<i className="icon-rotate-left-solid" />}
       />
       <OrdersInfobox
         title="Đã xác nhận"
@@ -92,12 +113,6 @@ const Orders = () => {
         count={countOrdersByStatus("cancelled")}
         color="red"
         icon={<i className="icon-ban-solid" />}
-      />
-      <OrdersInfobox
-        title="Đã hoàn tiền"
-        count={countOrdersByStatus("refunded")} // Adjust this if you have a "refunded" status
-        color="badge-status-bg"
-        icon={<i className="icon-rotate-left-solid" />}
       />
     </div>
   );

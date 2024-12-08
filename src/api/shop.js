@@ -43,7 +43,7 @@ export const GetAllShopForAdmin = async () => {
   const config = checkToken("application/json");
   try {
     const response = await axiosInstance.get(
-      `${URL_API}shop`,
+      `${URL_API}shop?sortBy=asc&includeStatistics=true`,
       config
     );
 

@@ -7,7 +7,7 @@ export const getCustomer = async () => {
   try {
     const config = checkToken("application/json");
     const response = await axiosInstance.get(
-      `${URL_API}user/customers`,
+      `${URL_API}user`,
       config
     );
     return response.data;
