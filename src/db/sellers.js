@@ -1,13 +1,14 @@
+import { statisticCategoryForShop } from "api/categorie";
 import { GetAllShopForAdmin } from "../api/shop";
 
-let Sellers = []; // Initialize Sellers as an empty array
+let Sellers = []; 
 
 // Function to fetch and update Sellers data
 const fetchSellers = async () => {
   try {
     const fetchedSellers = await GetAllShopForAdmin();
+    const fetchedstatisticCategory = await statisticCategoryForShop();
     console.log("Fetched sellers from DB:", fetchedSellers);
-
     // Update Sellers with the latest data
     Sellers = fetchedSellers.shops.map((seller) => ({
       id: seller._id,

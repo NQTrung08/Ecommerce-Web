@@ -13,26 +13,31 @@ const Counter = ({num, className, isFormatted, ...props}) => {
     const [countFinished, setCountFinished] = useState(false);
 
     return (
-        <CountUp start={countFinished ? num : 0}
-                 end={num}
-                 duration={2}
-                 onEnd={() => setCountFinished(true)}
-                 formattingFn={isFormatted ? value => numFormatter(value, 0, props.prefix) : null}
-                 {...props}>
-            {({countUpRef, start}) => (
-                <VisibilitySensor onChange={start} active={!countFinished} delayedCall>
-                    <span className={`relative ${className || ''}`}>
-                        <span className="opacity-0">
-                            {props.prefix}
-                            {isFormatted ? numFormatter(num, props.decimals || 0, props.prefix) : commaFormatter(num)}
-                            {props.suffix}
-                        </span>
-                        <span className="absolute left-0" ref={countUpRef}/>
-                    </span>
-                </VisibilitySensor>
-            )}
-        </CountUp>
-    )
+      <CountUp
+        start={countFinished ? num : 0}
+        end={num}
+        duration={2}
+        onEnd={() => setCountFinished(true)}
+        formattingFn={
+          isFormatted ? (value) => numFormatter(value, 0, props.prefix) : null
+        }
+        {...props}
+      >
+        {({ countUpRef, start }) => (
+          <VisibilitySensor
+            onChange={start}
+            active={!countFinished}
+            delayedCall
+          >
+            <span className={` ${className || ""}`}>
+              <span className="">
+                {numFormatter(num, props.decimals || 0, props.prefix)}
+              </span>
+            </span>
+          </VisibilitySensor>
+        )}
+      </CountUp>
+    );
 }
 
 Counter.propTypes = {

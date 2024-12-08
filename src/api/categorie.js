@@ -139,5 +139,17 @@ export const updateParentForCategories = async (
   }
 };
 
-
+export const statisticCategoryForShop = async () => {
+  try {
+    const config = checkToken("application/json");
+    const response = await axiosInstance.get(
+      `${URL_API}category/statistical/shop`,
+      config
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch category statistics", error);
+    throw error;
+  }
+};
 

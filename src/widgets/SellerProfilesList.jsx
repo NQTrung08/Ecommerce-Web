@@ -12,39 +12,38 @@ import { useState, useEffect } from "react";
 import { SELLER_SORT_OPTIONS } from "@constants/options";
 
 // API function
-import { GetAllShopForAdmin } from "../api/shop"; // Import the GetAllShopForAdmin function
+import { GetAllShopForAdmin } from "../api/shop";
+import { statisticCategoryForShop } from "../api/categorie";
 
 const SellerProfilesList = () => {
-  const [sellers, setSellers] = useState([]); // State to hold seller data
+  const [sellers, setSellers] = useState([]); 
   const [sort, setSort] = useState(SELLER_SORT_OPTIONS[0]);
-  const pagination = usePagination(sellers, 4); // Use sellers for pagination
+  const pagination = usePagination(sellers, 4);
 
   // Fetch sellers data on component mount
   useEffect(() => {
     const getSellers = async () => {
       const fetchedSellers = await GetAllShopForAdmin();
-      console.log("fetchedSellers", fetchedSellers.shops);
+      const statisticCategory = await statisticCategoryForShop();
 
-      // Transform the fetched data to match the required structure
-      const transformedSellers = fetchedSellers.shops.map((seller) => ({
-        id: seller._id, // Use the seller's _id as the ID
-        logo: seller.logo, // Use the logo directly from the API
-        name: seller.shop_name, // Map shop_name to name
-        website: "", // Set website to an empty string or map accordingly if available
-        address: seller.address, // Map address directly
-        phone: seller.phone_number, // Map phone_number directly
-        email: `${seller.owner_id.userName}@gmail.com`, // Generate email based on userName
-        rating: Math.floor(Math.random() * 5) + 1, // Random rating between 1 and 5
-        profit: {
-          electronics: Math.floor(Math.random() * 10000), // Example random profit data
-          fashion: Math.floor(Math.random() * 10000),
-          food: Math.floor(Math.random() * 10000),
-          services: Math.floor(Math.random() * 10000),
-        },
-        sales: Math.floor(Math.random() * 100000), // Example random sales data
-      }));
+   const transformedSellers = fetchedSellers.shops.map((seller) => ({
+     id: seller._id,
+     logo: seller.logo, // Use the logo directly from the API
+     name: seller.shop_name, // Map shop_name to name
+     website: seller.website || "", // Use website if available, otherwise an empty string
+     address: seller.address, // Map address directly
+     phone: seller.phone_number, // Map phone_number directly
+     email: `${seller.owner_id.userName
+       .toLowerCase()
+       .replace(/\s+/g, "")}@gmail.com`, // Generate email based on userName
+     rating: Math.floor(Math.random() * 5) + 1, // Random rating between 1 and 5
+     profit: statisticCategory,
+     sales: Math.floor(Math.random() * 100000), // Random sales value
+     totalOrdersEcommerce: seller.order_count, // Total orders from the API's root object
+     totalRevenueEcommerce: seller.total_revenue, // Total revenue from the API's root object
+   }));
 
-      setSellers(transformedSellers); // Set transformed sellers
+      setSellers(transformedSellers); 
     };
 
     getSellers();
