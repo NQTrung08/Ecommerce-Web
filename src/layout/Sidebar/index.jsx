@@ -65,8 +65,12 @@ const Sidebar = () => {
                       }
                     >
                       <div className="flex items-center gap-2.5">
-                        {route.name === "Categories" ? (
-                          <FontAwesomeIcon icon={faThLarge} />
+                        {console.log("route.name", route.name)}
+                        {route.name === "Danh mục" ? (
+                          <>
+                            <p>hahahaha</p>
+                            <FontAwesomeIcon icon="fa-solid fa-warehouse" />
+                          </>
                         ) : (
                           <i className={`icon icon-${route.icon}`} />
                         )}
@@ -112,17 +116,17 @@ const Sidebar = () => {
                   <NavLink className="menu_item" to={route.path}>
                     <div className="flex items-center gap-2.5">
                       {route.name === "Categories" ? (
-                        <FontAwesomeIcon icon={faThLarge} />
+                        <FontAwesomeIcon icon="fa-solid fa-warehouse" />
                       ) : (
                         <i className={`icon icon-${route.icon}`} />
                       )}
                       <span className="text">{route.name}</span>
                     </div>
-                    {route.qty && (
+                    {/* {route.qty && (
                       <span className="badge rounded bg-green xl:hidden">
                         {route.qty}
                       </span>
-                    )}
+                    )} */}
                   </NavLink>
                   {index === ROUTES.length - 2 && (
                     <span className="menu_divider" />

@@ -24,9 +24,6 @@ const ProductsManagement = () => {
       <PageHeader title="Quản lý Sản phẩm" />
       <div className="flex flex-col-reverse gap-4 mb-5 md:flex-col lg:flex-row lg:justify-between">
         <div className="flex flex-col gap-4 md:flex-row md:gap-[14px]">
-          <NavLink to="/product-editor" className="btn btn--primary">
-            Thêm sản phẩm mới <i className="icon-circle-plus-regular" />
-          </NavLink>
           <CSVLink className="btn btn--outline blue !h-[44px]" data={products}>
             Xuất CSV <i className="icon-file-export-solid" />
           </CSVLink>

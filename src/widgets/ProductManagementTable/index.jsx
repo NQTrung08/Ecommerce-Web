@@ -303,9 +303,6 @@ const ProductManagementTable = () => {
       </div>
       <div className="flex flex-col-reverse gap-4 mt-4 mb-5 md:flex-row md:justify-between md:items-end md:mt-5 md:mb-6">
         <p>Xem sản phẩm: {pagination.showingOf()}</p>
-        <button onClick={handleDeleteProducts} className="btn btn-danger">
-          Xóa sản phẩm
-        </button>
       </div>
 
       <div className="flex flex-1 flex-col gap-[22px]">
