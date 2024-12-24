@@ -6,7 +6,7 @@ import LabeledProgressBar from "@components/LabeledProgressBar";
 import { getPercentage, numFormatter } from "@utils/helpers";
 import { useEffect, useState } from "react";
 import { statisticCategoryForAdmin } from "../api/categorie";
-import Loading from "@components/Loading";
+import Loader from "@components/Loader";
 
 const TopSalesByCategories = () => {
   const [data, setData] = useState([]);
@@ -39,7 +39,7 @@ const TopSalesByCategories = () => {
   }, []);
 
   if (loading) {
-    return <Loading />;
+    return <Loader />;
   }
 
   return (

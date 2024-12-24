@@ -5,7 +5,7 @@ import {Table} from 'antd';
 const StyledTable = styled(Table)`
   margin-bottom: 26px;
   flex-grow: 1;
-  
+
   .ant-table-thead {
     position: relative;
 

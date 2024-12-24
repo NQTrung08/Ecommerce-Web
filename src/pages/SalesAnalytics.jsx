@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import PageHeader from "@layout/PageHeader";
 import MainProfileInfo from "@widgets/MainProfileInfo";
 import SalesStats from "@widgets/SalesStats";
-import { useWindowSize } from "react-use";
 import { getProfitForAdmin, getShopRevenue } from "../api/statistic";
-import Loading from "@components/Loading";
+import Loader from "@components/Loader";
 
 const SalesAnalytics = () => {
   const [totalRevenueEcommerce, setTotalRevenueEcommerce] = useState(null);
@@ -30,12 +29,13 @@ const SalesAnalytics = () => {
     fetchBenefitData();
   }, []);
 
+  // Bug  1: Thêm chọn thời gian cho biểu đồ
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const revenueData = await getShopRevenue({
-          startDate: "2023-01-01",
+          startDate: "2024-01-01",
           endDate: "2024-12-31",
           groupBy: "month",
         });
@@ -64,7 +64,7 @@ const SalesAnalytics = () => {
     fetchData();
   }, []);
 
-  if (loading) return <Loading />;
+  if (loading) return <Loader />;
   if (error) return <div>{error}</div>;
 
   return (

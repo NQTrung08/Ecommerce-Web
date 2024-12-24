@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import dayjs from "dayjs";
 import Spring from "@components/Spring";
 import StyledTable from "./styles";
 import CalendarSelector from "@components/CalendarSelector";
@@ -7,14 +8,12 @@ import Pagination from "@ui/Pagination";
 import TransactionCollapseItem from "@components/TransactionCollapseItem";
 import Empty from "@components/Empty";
 import Loader from "@components/Loader";
-
 import usePagination from "@hooks/usePagination";
 import { useWindowSize } from "react-use";
 
 import { TRANSACTIONS_COLUMN_DEFS } from "@constants/columnDefs";
 import { TRANSACTIONS_SORT_OPTIONS } from "@constants/options";
 import { fetchTransaction } from "@db/transactions";
-import dayjs from "dayjs";
 
 const TransactionsTable = () => {
   const { width } = useWindowSize();
@@ -24,22 +23,9 @@ const TransactionsTable = () => {
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [loading, setLoader] = useState(true);
   const [error, setError] = useState(null);
-  const [dateRange, setDateRange] = useState([
-    dayjs().startOf("year"),
-    dayjs(),
-  ]);
+  const [dateRange, setDateRange] = useState([dayjs().startOf("year"), dayjs()]);
 
-  const sortedData = filteredTransactions.sort((a, b) => {
-    switch (sort.value) {
-      default:
-      case "recent":
-        return new Date(b.timestamp) - new Date(a.timestamp);
-      case "oldest":
-        return new Date(a.timestamp) - new Date(b.timestamp);
-    }
-  });
-
-  const pagination = usePagination(sortedData, 6);
+  const pagination = usePagination(filteredTransactions, 6);
 
   useEffect(() => {
     const loadData = async () => {
@@ -59,41 +45,39 @@ const TransactionsTable = () => {
   }, []);
 
   useEffect(() => {
-    const filterByDateRange = () => {
+    const filterAndSortByDateRange = () => {
       const [start, end] = dateRange;
-      setFilteredTransactions(
-        transactions.filter(
-          (transaction) =>
-            dayjs(transaction.timestamp).isAfter(start) &&
-            dayjs(transaction.timestamp).isBefore(end)
-        )
+  
+      // Lọc giao dịch theo phạm vi ngày đã chọn
+      const filtered = transactions.filter(
+        (transaction) =>
+          dayjs(transaction.timestamp).isAfter(start, 'day') &&
+          dayjs(transaction.timestamp).isBefore(end, 'day')
       );
-      pagination.goToPage(0);
+  
+      // Sắp xếp giao dịch theo thứ tự ngày
+      const sorted = filtered.sort((a, b) => {
+        if (sort.value === "recent") {
+          return dayjs(b.timestamp).isBefore(dayjs(a.timestamp)) ? 1 : -1;
+        } else if (sort.value === "oldest") {
+          return dayjs(a.timestamp).isBefore(dayjs(b.timestamp)) ? 1 : -1;
+        }
+        return 0; // Giữ nguyên nếu không có lựa chọn sắp xếp
+      });
+  
+      setFilteredTransactions(sorted);
     };
-
-    filterByDateRange();
-  }, [dateRange, transactions]);
-
-  useEffect(() => {
-    pagination.goToPage(0);
-    setActiveCollapse("");
-  }, [sort]);
-
-  useEffect(() => {
-    setActiveCollapse("");
-  }, [pagination.currentPage, width]);
+  
+    filterAndSortByDateRange();
+  }, [dateRange, transactions, sort]);
+  
 
   const handleCollapse = (sku) => {
     setActiveCollapse((prev) => (prev === sku ? "" : sku));
   };
 
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
+  if (loading) return <Loader />;
+  if (error) return <div>{error}</div>;
 
   return (
     <>
@@ -116,7 +100,6 @@ const TransactionsTable = () => {
         </div>
       </div>
       <Spring className="flex flex-col flex-1">
-        {console.log("pagination.currentItems()", pagination.currentItems())}
         {width >= 768 ? (
           <StyledTable
             columns={TRANSACTIONS_COLUMN_DEFS}

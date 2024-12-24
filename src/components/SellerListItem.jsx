@@ -6,41 +6,9 @@ import RatingStars from '@ui/RatingStars';
 import LabeledProgressBar from '@components/LabeledProgressBar';
 import Counter from '@components/Counter';
 
-// hooks
-import {useTheme} from '@contexts/themeContext';
-
-import MAP_THEME from '@constants/map-theme';
 import {numFormatter} from '@utils/helpers';
 
 const MAP_KEY = import.meta.env.VITE_MAP_KEY;
-
-const coords = {lat: 40.73936818014904, lng: -73.44753952002102};
-
-const Map = ({coords = {lat: 40.73936818014904, lng: -73.44753952002102}}) => {
-    const {theme} = useTheme();
-    const {isLoaded} = useJsApiLoader({
-        id: 'google-map-script',
-        googleMapsApiKey: MAP_KEY
-    })
-
-    return isLoaded ? (
-        <GoogleMap
-            mapContainerStyle={{
-                width: '100%',
-                height: '100%',
-            }}
-            center={coords}
-            zoom={12}
-            options={{
-                disableDefaultUI: true,
-                zoomControl: false,
-                styles: MAP_THEME[theme],
-            }}
-        >
-            <Marker position={coords}/>
-        </GoogleMap>
-    ) : <></>
-}
 
 const SellerListItem = ({ seller, index }) => {
   const getPercentage = (value) => {
@@ -56,7 +24,7 @@ const SellerListItem = ({ seller, index }) => {
       className="card flex flex-col gap-5 md:gap-[26px] xl:flex-row xl:justify-between"
       index={index}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_,minmax(0,240px)] lg:gap-[26px]">
+      <div className="grid grid-cols-1  lg:gap-[26px]">
         <div className="flex flex-col flex-1 gap-5 md:flex-row md:gap-[26px]">
           <div className="flex flex-col shrink-0 gap-5 md:w-[193px]">
             <div className="img-wrapper h-[156px] flex justify-center items-center">
@@ -94,13 +62,10 @@ const SellerListItem = ({ seller, index }) => {
             </div>
           </div>
         </div>
-        <div className="h-[230px] w-full rounded-md mt-2.5 overflow-hidden bg-body md:mt-5 lg:m-0 lg:h-full">
-          {MAP_KEY && <Map coords={coords} />}
-        </div>
       </div>
       <div className=" flex flex-row gap-5">
         <div className="flex flex-col gap-5">
-          <div className="w-[300px]">
+          <div className="w-[200px]">
             <h5 className="mb-2.5">Thống kê:</h5>
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
@@ -132,11 +97,13 @@ const SellerListItem = ({ seller, index }) => {
             <RatingStars rating={seller.rating} />
           </div>
         </div>
-        <div className="max-w-[300px] flex flex-row">
-          <h5 className="mb-2.5 xl:hidden 2xl:block">
-            Lợi nhuận bán hàng theo danh mục:
-          </h5>
-          <div className="flex flex-col w-[300px]">
+        <div className="max-w-[400px] flex flex-row">
+          <div className='min-w-[100px]'>
+            <h5 className="mb-2.5 xl:hidden 2xl:block">
+              Lợi nhuận theo danh mục:
+            </h5>
+          </div>    
+          <div className="flex flex-col w-[500px]">
             <h5 className="mb-2.5 hidden xl:block 2xl:hidden">Lợi nhuận:</h5>
             <div className="flex flex-col gap-4">
               {seller.profit.slice(0, 4).map((category, index) => (

@@ -7,9 +7,8 @@ import PeriodSalesRevenue from "@widgets/PeriodSalesRevenue";
 import SellerProfileInfobox from "@components/SellerProfileInfobox";
 
 // hooks
-import { useWindowSize } from "react-use";
 import { useParams } from "react-router-dom";
-import Loading from "@components/Loading";
+import Loader from "@components/Loader";
 import { useEffect, useState } from "react";
 import { getRevenueByShopId } from "../api/statistic";
 import { statisticCategoryForShop } from "../api/categorie";
@@ -75,12 +74,12 @@ const SellerProfile = () => {
     setSelectedDates({ startDate, endDate });
   };
 
-  if (loading) return <Loading />;
+  if (loading) return <Loader />;
   if (error) return <div>{error}</div>;
 
   return (
     <>
-      <PageHeader title="Chi tiết hồ sơ người bán" />
+      <PageHeader title="Chi tiết người bán" />
       <div className="flex flex-col gap-4 mb-5 md:mb-[26px] md:gap-5 lg:flex-row lg:justify-between">
         <CalendarSelector
           wrapperClass="md:max-w-[275px]"

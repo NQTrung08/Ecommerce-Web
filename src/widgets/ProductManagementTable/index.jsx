@@ -242,46 +242,14 @@ const ProductManagementTable = () => {
       title: "Ngày",
       dataIndex: "date",
       render: (date) => (
-        <div className="flex flex-col">
-          <span>Ngày sửa đổi:</span>
-          <span className="font-bold text-header">
+        <div className="flex flex-col items-start">
+          <span className="font-bold text-header w-fit">
             {date && dayjs(date).format("DD/MM/YYYY")}
           </span>
         </div>
       ),
       responsive: ["lg"],
-    },
-    {
-      title: "Hành động",
-      dataIndex: "actions",
-      render: (_, product) => (
-        <div className="flex items-center justify-end gap-11">
-          <NavLink to={`/product-editor/${product.id}`} aria-label="Chỉnh sửa">
-            <i className="icon icon-pen-to-square-regular text-lg leading-none" />
-          </NavLink>
-
-          {(category === "deleted" || category === "drafted") && (
-            <button
-              onClick={() => handlePublishProduct(product.id)}
-              aria-label="Xuất bản"
-              className="text-blue-500 hover:text-blue-700"
-            >
-              <i className="fas fa-paper-plane text-lg leading-none" />
-            </button>
-          )}
-
-          {category === "deleted" && (
-            <button
-              onClick={() => handleDeleteProduct(product.id)}
-              aria-label="Xuất bản"
-              className="text-blue-500 hover:text-blue-700"
-            >
-              <i className="fas fa-trash text-lg leading-none" />
-            </button>
-          )}
-        </div>
-      ),
-    },
+    }
   ];
 
   return (

@@ -15,7 +15,7 @@ const CalendarSelector = ({
 
   return (
     <div className={`${wrapperClass || ""} flex flex-col gap-2.5 w-full`}>
-      <label className="h5 w-fit" htmlFor={id}>
+      <label className="h5 w-fit text-xl" htmlFor={id}>
         {label}:
       </label>
       <RangeDatePicker id={id} onChange={handleDateChange} />

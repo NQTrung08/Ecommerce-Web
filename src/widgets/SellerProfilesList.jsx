@@ -1,8 +1,7 @@
 // components
 import Pagination from "@ui/Pagination";
 import SellerListItem from "@components/SellerListItem";
-import CalendarSelector from "@components/CalendarSelector";
-import Select from "@ui/Select";
+import Loader from "../components/Loader";
 
 // hooks
 import usePagination from "@hooks/usePagination";
@@ -19,6 +18,7 @@ import { getReviewForShop } from "../api/review";
 const SellerProfilesList = () => {
   const [sellers, setSellers] = useState([]);
   const [sort, setSort] = useState(SELLER_SORT_OPTIONS[0]);
+  const [loading, setLoading] = useState(true);
   const pagination = usePagination(sellers, 4);
 
   useEffect(() => {
@@ -62,6 +62,8 @@ const SellerProfilesList = () => {
           };
         });
 
+        setLoading(false);
+
         setSellers(transformedSellers);
       } catch (error) {
         console.error("Error fetching sellers or statistics:", error);
@@ -75,22 +77,11 @@ const SellerProfilesList = () => {
     pagination.goToPage(0);
   }, [sort]);
 
-  console.log("sellers", sellers);
+  if(loading){
+    return <Loader/>
+  }
   return (
     <>
-      <div className="flex flex-col gap-4 mb-5 md:flex-row md:mb-[26px] justify-between">
-        <CalendarSelector wrapperClass="md:max-w-[275px]" id="sellerList" />
-        <div className="flex flex-col-reverse gap-2.5 md:flex-col md:min-w-[220px]">
-          <p className="md:text-right">
-            Xem hồ sơ:{pagination.showingOf()}
-          </p>
-          <Select
-            value={sort}
-            onChange={setSort}
-            options={SELLER_SORT_OPTIONS}
-          />
-        </div>
-      </div>
       <div className="flex flex-col flex-1 gap-5 mb-[30px] md:gap-[26px]">
         {pagination.currentItems().map((seller, index) => (
           <SellerListItem key={seller.id} seller={seller} index={index} />

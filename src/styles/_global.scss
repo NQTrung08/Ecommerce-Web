@@ -201,3 +201,11 @@ a[href^="https://maps.google.com/maps"] {
 .gmnoprint div {
     background: none !important;
 }
+
+.ant-table-wrapper .ant-table-container table>thead>tr:first-child >*:last-child {
+    text-align: left !important;
+}
+
+.ant-table-wrapper {
+    width: 100% !important;
+}

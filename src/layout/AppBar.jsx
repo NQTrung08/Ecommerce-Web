@@ -81,9 +81,9 @@ const AppBar = () => {
               </button>
             )}
             {width >= 768 && (
-              <div className="flex w-full mx-7">
+              <div className="flex items-center justify-center w-full mx-7">
                 <Logo />
-                <Search wrapperClass="flex-1 max-w-[1054px] ml-5 mr-auto 4xl:ml-0" />
+                {/* <Search wrapperClass="flex-1 max-w-[1054px] ml-5 mr-auto 4xl:ml-0" /> */}
               </div>
             )}
             <div className="flex items-center gap-5 md:ml-5 xl:gap-[26px]">
@@ -107,16 +107,7 @@ const AppBar = () => {
                   }-regular`}
                 />
               </button>
-              <CustomTooltip
-                title={<LocaleMenu active={locale} setActive={setLocale} />}
-              >
-                <button
-                  className="w-6 h-6 rounded-full overflow-hidden xl:w-8 xl:h-8"
-                  aria-label="Change language"
-                >
-                  <img src={activeLocale.icon} alt={activeLocale.label} />
-                </button>
-              </CustomTooltip>
+              
               <div className="relative">
                 <button
                   className="h-8 w-8 rounded-full bg-accent text-widget text-sm flex items-center
