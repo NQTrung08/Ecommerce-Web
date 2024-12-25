@@ -171,8 +171,7 @@ const OrdersTable = ({ initialOrders }) => {
                   </span>
                 </p>
               </div>
-              <div className="flex flex-col gap-5">
-                {/* Hủy đơn hàng */}
+              {/* <div className="flex flex-col gap-5">
                 {order.order_status !== "cancel" &&
                   order.order_status !== "cancelled" && (
                     <button
@@ -190,7 +189,6 @@ const OrdersTable = ({ initialOrders }) => {
                     </button>
                   )}
 
-                {/* Cập nhật trạng thái */}
                 {order.order_status !== "completed" &&
                   order.order_status !== "cancel" &&
                   order.order_status !== "cancelled" && (
@@ -201,7 +199,7 @@ const OrdersTable = ({ initialOrders }) => {
                       Cập nhật trạng thái
                     </button>
                   )}
-              </div>
+              </div> */}
             </div>
           </div>
         ))

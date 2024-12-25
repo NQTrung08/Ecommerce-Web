@@ -64,6 +64,33 @@ const SellerListItem = ({ seller, index }) => {
         </div>
       </div>
       <div className=" flex flex-row gap-5">
+         {seller.profit.length !== 0 ? <div className="max-w-[400px] flex flex-col">
+          <div className='min-w-[400px]'>
+            <h5 className="mb-2.5 xl:hidden 2xl:block">
+              Lợi nhuận theo danh mục:
+            </h5>
+          </div>    
+          <div className="flex flex-col max-w-[400px]">
+            <h5 className="mb-2.5 hidden xl:block 2xl:hidden">Lợi nhuận:</h5>
+            <div className="flex flex-col gap-4">
+              {seller.profit.slice(0, 4).map((category, index) => (
+                <LabeledProgressBar
+                  key={category._id}
+                  wrapperClass="!gap-0"
+                  label={category.categoryName}
+                  value={getPercentage(
+                    category.totalRevenue | category.totalProducts
+                  )}
+                  displayValue={numFormatter(
+                    category.totalRevenue | category.totalProducts,
+                    2
+                  )}
+                  color={colors[index]}
+                />
+              ))}
+            </div>
+          </div>
+        </div> : <div className='w-[400px]'></div>}
         <div className="flex flex-col gap-5">
           <div className="w-[200px]">
             <h5 className="mb-2.5">Thống kê:</h5>
@@ -96,33 +123,7 @@ const SellerListItem = ({ seller, index }) => {
             <h5 className="mb-2.5">Đánh giá:</h5>
             <RatingStars rating={seller.rating} />
           </div>
-        </div>
-        <div className="max-w-[400px] flex flex-row">
-          <div className='min-w-[100px]'>
-            <h5 className="mb-2.5 xl:hidden 2xl:block">
-              Lợi nhuận theo danh mục:
-            </h5>
-          </div>    
-          <div className="flex flex-col w-[500px]">
-            <h5 className="mb-2.5 hidden xl:block 2xl:hidden">Lợi nhuận:</h5>
-            <div className="flex flex-col gap-4">
-              {seller.profit.slice(0, 4).map((category, index) => (
-                <LabeledProgressBar
-                  key={category._id}
-                  wrapperClass="!gap-0"
-                  label={category.categoryName}
-                  value={getPercentage(
-                    category.totalRevenue | category.totalProducts
-                  )}
-                  displayValue={numFormatter(
-                    category.totalRevenue | category.totalProducts,
-                    2
-                  )}
-                  color={colors[index]}
-                />
-              ))}
-            </div>
-          </div>
+
         </div>
       </div>
     </Spring>

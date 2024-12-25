@@ -19,8 +19,8 @@ import { useWindowSize } from "react-use";
 import dayjs from "dayjs";
 import { numFormatter } from "@utils/helpers";
 
-// Chuyển đổi dữ liệu doanh thu để phù hợp với định dạng biểu đồ
 const preprocessData = (revenueData) => {
+  console.log("revenueData", revenueData);
   return revenueData.map((item, index, arr) => {
     const currentRevenue = item.totalRevenue;
     const previousRevenue = arr[index - 1]?.totalRevenue || currentRevenue;
@@ -28,8 +28,11 @@ const preprocessData = (revenueData) => {
       ((currentRevenue - previousRevenue) / Math.abs(previousRevenue || 1)) *
       100;
 
+    // Create a new date object based on the current month and year
+    const date = new Date(new Date().getFullYear(), item.month - 1); // Year is current year, and month is taken from the data
+
     return {
-      date: new Date(item.year, item.month - 1),
+      date,
       value: currentRevenue,
       trend: parseFloat(trend.toFixed(2)),
     };
@@ -44,7 +47,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         <span className="my-1">{dayjs(label).format("DD MMM, YYYY")}</span>
         <Trend value={payload[0].payload.trend} />
         <span className="h3 mt-2">
-          {numFormatter(payload[0].value, 1, "đ")}
+         đ {numFormatter(payload[0].value, 1)}
         </span>
       </div>
     );
@@ -60,9 +63,7 @@ const PeriodSalesRevenue = ({ revenueData }) => {
   return (
     <Spring className="card flex flex-col h-[300px] md:h-[494px] lg:h-[400px] xl:h-full">
       <div className="flex items-center justify-between mb-8">
-        <h4>
-          <span className="hidden xs:inline">Doanh thu</span> theo thời kỳ
-        </h4>
+        <h4>Doanh thu</h4>
         <InfoBtn />
       </div>
       <div className="flex-1 -mt-5 overflow-hidden">

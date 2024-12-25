@@ -1,21 +1,12 @@
 import { useEffect, useState } from "react";
 import { useWindowSize } from "react-use";
-import { toast } from "react-toastify";
-import {
-  deleteProducts,
-  publishProducts,
-  deletePermanentlyProducts,
-  countProducts,
-} from "../../api/product";
+import Search from "@ui/Search";
 import getProducts, { fetchProducts } from "../../db/products_management";
 import ProductManagementCollapseItem from "../../components/ProductManagementCollapseItem";
-import FilterItem from "../../ui/FilterItem";
 import Pagination from "../../ui/Pagination";
 import Empty from "../../components/Empty";
 import StyledTable from "./styles";
-import { NavLink } from "react-router-dom";
 import dayjs from "dayjs";
-import { PRODUCT_MANAGEMENT_OPTIONS } from "../../constants/options";
 import usePagination from "../../hooks/usePagination";
 
 const ProductManagementTable = () => {
@@ -25,25 +16,7 @@ const ProductManagementTable = () => {
   const [activeCollapse, setActiveCollapse] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [change, setChange] = useState(false);
-
-  const [productCounts, setProductCounts] = useState({
-    totalDraft: 0,
-    totalPublic: 0,
-    totalDeleted: 0,
-  });
-
-  useEffect(() => {
-    const fetchProductCounts = async () => {
-      try {
-        const counts = await countProducts();
-        setProductCounts(counts);
-      } catch (error) {
-        console.error("Error fetching product counts:", error);
-      }
-    };
-
-    fetchProductCounts();
-  }, []);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -54,89 +27,15 @@ const ProductManagementTable = () => {
     loadProducts();
   }, [category, change]);
 
-  const handlePublishProduct = async (productId) => {
-    try {
-      const response = await publishProducts([productId]);
-      toast.success("Sản phẩm đã được xuất bản thành công!", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 5000,
-      });
-      // Reload products after successful publish
-      await fetchProducts(category);
-      setProducts(getProducts(category));
-      setChange(!change);
-    } catch (error) {
-      console.error("Error publishing the product:", error);
-      toast.error("Lỗi khi xuất bản sản phẩm", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 5000,
-      });
-    }
-  };
-
-  const handleDeleteProduct = async (productId) => {
-    try {
-      const response = await deletePermanentlyProducts([productId]);
-      console.log("response", response);
-      toast.success("Sản phẩm đã được xóa vĩnh viễn!", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 5000,
-      });
-      await fetchProducts(category);
-      setProducts(getProducts(category));
-      setChange(!change);
-    } catch (error) {
-      console.error("Error delete permanently the product:", error);
-      toast.error("Lỗi khi xóa sản phẩm", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 5000,
-      });
-    }
-  };
-
-  const handleDeleteProducts = async () => {
-    try {
-      if (selectedProducts.length > 0) {
-        const response = await deleteProducts(selectedProducts);
-        setProducts(getProducts());
-        setSelectedProducts([]);
-
-        toast.success("Sản phẩm đã được xóa thành công", {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 5000,
-        });
-        setChange(!change);
-      } else {
-        toast.warn("Chưa chọn sản phẩm để xóa", {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 5000,
-        });
-      }
-    } catch (error) {
-      console.error("Lỗi khi xóa sản phẩm:", error);
-      toast.error("Lỗi khi xóa sản phẩm", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 5000,
-      });
-    }
-  };
-
-  const getQty = (status) => {
-    if (status === "all") {
-      return (
-        productCounts.totalDraft +
-        productCounts.totalPublic +
-        productCounts.totalDeleted
-      );
-    }
-    if (status === "publish") return productCounts.totalPublic;
-    if (status === "draft") return productCounts.totalDraft;
-    if (status === "deleted") return productCounts.totalDeleted;
-    return 0;
-  };
+  // Filter products based on the search query
+  const filteredProducts = products.filter(product => 
+    product.name.toLowerCase().includes(query.toLowerCase()) ||
+    product.sku.toLowerCase().includes(query.toLowerCase()) ||
+    product.category.toLowerCase().includes(query.toLowerCase())
+  );
 
   const dataByStatus = () => {
-    return products;
+    return filteredProducts; // Use filtered products instead of all products
   };
 
   const pagination = usePagination(dataByStatus(), 8);
@@ -255,24 +154,17 @@ const ProductManagementTable = () => {
   return (
     <div className="flex flex-col flex-1">
       <div className="flex flex-wrap gap-2 mb-4">
-        <span className="text-header">Sản phẩm:</span>
-        <div>
-          {PRODUCT_MANAGEMENT_OPTIONS.map((option, index) => (
-            <FilterItem
-              key={`filter-${index}`}
-              text={option.label}
-              qty={getQty(option.value)}
-              value={option.value}
-              active={category}
-              onClick={setCategory}
-            />
-          ))}
-        </div>
       </div>
-      <div className="flex flex-col-reverse gap-4 mt-4 mb-5 md:flex-row md:justify-between md:items-end md:mt-5 md:mb-6">
+      <div className="flex flex-col-reverse gap-4 mt-4 mb-5 items-center justify-center md:flex-row md:justify-between md:items-end md:mt-5 md:mb-6">
         <p>Xem sản phẩm: {pagination.showingOf()}</p>
+        <Search 
+          wrapperClass="lg:w-[326px]" 
+          placeholder="Tìm kiếm sản phẩm" 
+          query={query}
+          setQuery={setQuery} 
+        />
       </div>
-
+      {console.log("pagination.currentItems()", pagination.currentItems())}
       <div className="flex flex-1 flex-col gap-[22px]">
         {width >= 768 ? (
           <StyledTable

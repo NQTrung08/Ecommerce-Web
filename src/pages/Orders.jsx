@@ -129,7 +129,7 @@ const Orders = () => {
         {loading ? (
           <Loader />
         ) : error ? (
-          <p className="text-red-500">{error}</p>
+          <p className="text-rose-500">{error}</p>
         ) : (
           <OrdersTableShop
             initialOrders={filteredOrders}

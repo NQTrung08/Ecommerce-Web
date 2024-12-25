@@ -52,6 +52,7 @@ const SellerProfile = () => {
         groupBy: "month",
       });
 
+        console.log("revenueData", revenueData)
       const statisticCategory = await statisticCategoryForShop(id);
 
       setStatisticCategory(statisticCategory);
@@ -79,7 +80,7 @@ const SellerProfile = () => {
 
   return (
     <>
-      <PageHeader title="Chi tiết người bán" />
+      <PageHeader title="Chi tiết cửa hàng" />
       <div className="flex flex-col gap-4 mb-5 md:mb-[26px] md:gap-5 lg:flex-row lg:justify-between">
         <CalendarSelector
           wrapperClass="md:max-w-[275px]"

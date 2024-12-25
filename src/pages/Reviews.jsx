@@ -48,7 +48,6 @@ const Reviews = () => {
     <>
       <PageHeader title="Đánh giá" />
       <div className="flex flex-col flex-1 gap-5 md:gap-[26px]">
-        
         <LatestAcceptedReviews reviews={reviews} />
       </div>
     </>

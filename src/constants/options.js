@@ -65,12 +65,6 @@ export const APPS_OPTIONS = [
   { value: "finances", label: "Kế toán tài chính" },
 ];
 
-export const PRODUCT_MANAGEMENT_OPTIONS = [
-  { value: "publish", label: "Đã xuất bản" },
-  { value: "drafted", label: "Bản nháp" },
-  { value: "deleted", label: "Đã xóa" },
-];
-
 export const ORDER_SORT_OPTIONS = [
   { value: "default", label: "Sắp xếp mặc định" },
   { value: "a-z", label: "Theo tên: A-Z" },

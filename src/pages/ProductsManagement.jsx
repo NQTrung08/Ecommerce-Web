@@ -1,11 +1,9 @@
 // components
 import PageHeader from "@layout/PageHeader";
-import Search from "@ui/Search";
 import { CSVLink } from "react-csv";
 import ProductManagementTable from "@widgets/ProductManagementTable";
 import { useState, useEffect } from "react";
 import getProducts, { fetchProducts } from "@db/products_management";
-import { NavLink } from "react-router-dom";
 
 const ProductsManagement = () => {
   const [products, setProducts] = useState([]);
@@ -28,7 +26,6 @@ const ProductsManagement = () => {
             Xuất CSV <i className="icon-file-export-solid" />
           </CSVLink>
         </div>
-        <Search wrapperClass="lg:w-[326px]" placeholder="Tìm kiếm sản phẩm" />
       </div>
       <ProductManagementTable products={products} />
     </>

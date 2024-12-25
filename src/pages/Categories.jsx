@@ -126,7 +126,7 @@ const CategoryTree = () => {
             onClick={() => openModal("edit", node)}
           />
           <DeleteOutlined
-            className="ml-2 text-red-500"
+            className="ml-2 text-rose-500"
             onClick={() => openModal("delete", node)}
           />
         </span>
@@ -197,7 +197,7 @@ const CategoryTree = () => {
       <PageHeader title="Quản lý danh mục" />
       <ToastContainer />
 
-      <div className="w-full p-4">
+      <div className="w-full"> 
         <Tree
           className="draggable-tree"
           multiple

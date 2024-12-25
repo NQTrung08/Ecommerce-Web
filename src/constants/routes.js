@@ -1,18 +1,19 @@
 const ROUTES = [
   {
-    name: "Bảng điều khiển",
+    name: "Tổng quan",
     icon: "rectangle-history-circle-user-regular",
     links: [
-      { name: "Phân tích doanh số", path: "/" },
-      { name: "Danh sách người bán", path: "/sellers-list" },
+      { name: "Thống kê toàn sàn", path: "/" },
+      // { name: "Thống kê cửa hàng", path: "/statistics-shop" },
+      { name: "Danh sách cửa hàng", path: "/sellers-list" },
     ],
   },
   {
     name: "Sản phẩm",
     icon: "boxes-stacked-regular",
     links: [
-      { name: "Quản lý sản phẩm", path: "/products-management" },
       { name: "Danh mục", path: "/categories" },
+      { name: "Quản lý sản phẩm", path: "/products-management" },
     ],
   },
   {

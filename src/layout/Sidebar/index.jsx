@@ -65,7 +65,6 @@ const Sidebar = () => {
                       }
                     >
                       <div className="flex items-center gap-2.5">
-                        {console.log("route.name", route.name)}
                         {route.name === "Danh mục" ? (
                           <>
                             <p>hahahaha</p>

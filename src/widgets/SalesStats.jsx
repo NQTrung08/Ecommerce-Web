@@ -31,9 +31,9 @@ const CustomTooltip = ({ active, payload, label }) => {
         <div className="flex flex-col">
           {payload.map((item, index) => (
             <div className="flex gap-1.5" key={index}>
-              <span className="label-text capitalize">{item.name}:</span>
+              {/* <span className="label-text capitalize">{item.name}:</span> */}
               <span className="h6 !text-sm">
-                {numFormatter(item.value, 1, "$")}
+                {numFormatter(item.value, 1)}
               </span>
             </div>
           ))}
@@ -52,6 +52,7 @@ const SalesStats = ({ data, title, color }) => {
   const expenseColor = theme === "light" ? "var(--input-border)" : "#8D8D99";
   const [chartType, setChartType] = useState("BarChart");
 
+  console.log("data", data);
   const handleChartTypeChange = (e) => {
     setChartType(e.target.value);
   };
@@ -60,13 +61,13 @@ const SalesStats = ({ data, title, color }) => {
     <Spring className="card w-full flex flex-col h-[300px] md:h-[494px] lg:col-span-3 xl:col-span-1">
       <div className="flex flex-col gap-2.5 mb-5 md:flex-row md:justify-between md:items-center">
         <select
-          className="p-2 border rounded-md font-heading font-semibold text-sm text-header"
+          className="p-2 border rounded-md font-heading font-semibold text-sm text-header text-black"
           value={chartType}
           onChange={handleChartTypeChange}
         >
-          <option value="BarChart">Bar Chart</option>
-          <option value="LineChart">Line Chart</option>
-          <option value="AreaChart">Area Chart</option>
+          <option className="text-black" value="BarChart">Bar Chart</option>
+          <option className="text-black" value="LineChart">Line Chart</option>
+          <option className="text-black" value="AreaChart">Area Chart</option>
         </select>
         <div className="flex items-center gap-5">
           <div className="flex items-center gap-2.5">

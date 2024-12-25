@@ -19,7 +19,6 @@ const fetchSellers = async () => {
     const reviewForShop = await Promise.all(
       fetchedSellers.shops.map((shop) => getReviewForShop(shop._id))
     );
-    console.log("reviewForShop", reviewForShop);
 
     Sellers = fetchedSellers.shops.map((seller, index) => ({
       id: seller._id,

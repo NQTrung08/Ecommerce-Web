@@ -65,7 +65,7 @@ const Customers = () => {
       key: "status",
       render: (status) => (
         <span
-          className={status === "active" ? "text-green-500" : "text-red-500"}
+          className={status === "active" ? "text-green-500" : "text-rose-500"}
         >
           {status === "active" ? "Đang hoạt động" : "Không hoạt động"}
         </span>

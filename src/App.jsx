@@ -221,7 +221,7 @@ const App = () => {
                     }
                   />
                   <Route
-                    path="reviews"
+                    path="reviews/:slug"
                     element={
                       isAuthenticated() ? (
                         <Reviews />
