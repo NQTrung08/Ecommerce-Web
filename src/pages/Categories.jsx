@@ -43,16 +43,18 @@ const CategoryTree = () => {
   const onSelect = (keys, info) => {
     console.log("Trigger Select", keys, info);
   };
+
   const onExpand = (keys, info) => {
     console.log("Trigger Expand", keys, info);
   };
+
   const onDrop = async (info) => {
     const draggedNode = info.dragNode;
     const targetNode = info.node;
 
     if (!targetNode || !draggedNode) return;
 
-    const draggedId = draggedNode.key.split("-").pop(); // Extract dragged category id
+    const draggedId = draggedNode.key.split("-").pop();
     const targetKeyParts = targetNode.key.split("-");
     const newParentId = targetKeyParts
       .slice(0, targetKeyParts.length - 1)
@@ -66,16 +68,14 @@ const CategoryTree = () => {
           newParentId: targetKeyParts[targetKeyParts.length - 1],
           newIndex: newPos,
         });
-        toast.success("Category moved as a child successfully.");
       } else {
         await updateParentForCategories({
           categoryIds: [draggedId],
           newParentId: finalNewParentId,
           newIndex: newPos,
         });
-        toast.success("Category position swapped successfully.");
       }
-
+      toast.success("Đã di chuyển danh mục thành công.");
       fetchCategories();
     } catch (error) {
       console.error("Error updating category:", error);
@@ -147,45 +147,41 @@ const CategoryTree = () => {
   };
 
   const handleFileChange = (e) => {
-    console.log("File change event:", e);
     const selectedFile = e.fileList[0];
-    if (!selectedFile) {
-      console.error("No file selected");
-      return;
-    }
+    if (!selectedFile) return;
     setFile(selectedFile.originFileObj);
-    setPreviewImage(URL.createObjectURL(selectedFile.originFileObj)); // Preview the image
+    setPreviewImage(URL.createObjectURL(selectedFile.originFileObj));
   };
 
   const handleAction = async () => {
-    console.log("File in handleAction:", file);
     if (!file && action !== "delete") {
-      toast.error("No file selected.");
-      return; 
+      toast.error("Không có ảnh nào được chọn.");
+      return;
     }
-
+  
     try {
-      if (action === "create" && categoryName && selectedCategory) {
-        await addCategory(selectedCategory.id, categoryName, file);
+      if (action === "create" && categoryName) {
+        await addCategory('', categoryName, file);
+        toast.success("Đã tạo danh mục thành công.");
       } else if (action === "edit" && selectedCategory) {
         await updateCategory(selectedCategory.id, {
           parent_id: selectedCategory.parentId,
           category_name: categoryName,
           file,
         });
+        toast.success("Đã cập nhật danh mục thành công.");
       } else if (action === "delete" && selectedCategory) {
         await deleteCategory(selectedCategory.id);
+        toast.success("Đã xóa danh mục thành công.");
       }
-      toast.success(`Category ${action}d successfully.`);
       fetchCategories();
       resetForm();
       setShowActionModal(false);
     } catch (error) {
-      console.error(`Failed to ${action} category`, error);
-      toast.error(`Failed to ${action} category.`);
+      toast.error(`Lỗi khi ${action} danh mục.`);
     }
   };
-
+  
   const resetForm = () => {
     setCategoryName("");
     setFile(null);
@@ -197,7 +193,16 @@ const CategoryTree = () => {
       <PageHeader title="Quản lý danh mục" />
       <ToastContainer />
 
-      <div className="w-full"> 
+      <div className="w-full">
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => openModal("create")}
+          className="mb-4"
+        >
+          Tạo danh mục mới
+        </Button>
+
         <Tree
           className="draggable-tree"
           multiple
@@ -223,8 +228,8 @@ const CategoryTree = () => {
         okText={action === "delete" ? "Delete" : "Save"}
         cancelText="Cancel"
         style={{
-          top: "50%", 
-          transform: "translateY(-50%) translateX(70%)", 
+          top: "50%",
+          transform: "translateY(-50%) translateX(70%)",
         }}
       >
         {action !== "delete" && (

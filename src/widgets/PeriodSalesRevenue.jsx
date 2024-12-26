@@ -28,8 +28,10 @@ const preprocessData = (revenueData) => {
       ((currentRevenue - previousRevenue) / Math.abs(previousRevenue || 1)) *
       100;
 
-    // Create a new date object based on the current month and year
-    const date = new Date(new Date().getFullYear(), item.month - 1); // Year is current year, and month is taken from the data
+    // If day is provided, use it; otherwise, use the month
+    const date = item.day
+      ? new Date(new Date().getFullYear(), item.month - 1, item.day) // Include the day
+      : new Date(new Date().getFullYear(), item.month - 1); // Only month
 
     return {
       date,
@@ -41,13 +43,20 @@ const preprocessData = (revenueData) => {
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
+    const labelString = label instanceof Date ? label.toString() : label;
+
+    const isDayData = labelString.includes(" "); 
+    const formattedDate = isDayData
+      ? dayjs(labelString).format("DD MMM, YYYY") 
+      : dayjs(labelString).format("MMM, YYYY"); 
+
     return (
       <div className="chart-tooltip px-[14px] py-5 flex flex-col">
         <h6>Doanh thu vào:</h6>
-        <span className="my-1">{dayjs(label).format("DD MMM, YYYY")}</span>
+        <span className="my-1">{formattedDate}</span>
         <Trend value={payload[0].payload.trend} />
         <span className="h3 mt-2">
-         đ {numFormatter(payload[0].value, 1)}
+          {numFormatter(payload[0].value, 1)}
         </span>
       </div>
     );
@@ -57,6 +66,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const PeriodSalesRevenue = ({ revenueData }) => {
+  console.log("first", revenueData)
   const { width } = useWindowSize();
   const data = preprocessData(revenueData);
 
@@ -102,14 +112,18 @@ const PeriodSalesRevenue = ({ revenueData }) => {
               dy={9}
               hide={width < 768 || (width >= 1024 && width < 1280)}
               tick={{ fill: "var(--header)" }}
-              tickFormatter={(value) => dayjs(value).format("MMM YYYY")}
+              tickFormatter={(value) => {
+                return value.getDate() ? dayjs(value).format("DD/MM") : dayjs(value).format("MM/YYYY");
+              }}
             />
+
+
             <YAxis
               tickLine={false}
               axisLine={false}
               hide={width < 768}
               dx={-20}
-              tickFormatter={(value) => numFormatter(value, 0, "đ")}
+              tickFormatter={(value) => numFormatter(value, 0)}
             />
             <Tooltip
               cursor={{ strokeDasharray: "4 4", stroke: "var(--header)" }}

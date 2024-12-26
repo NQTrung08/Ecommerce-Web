@@ -53,8 +53,6 @@ const SalesProfitByCategory = ({ statisticCategory }) => {
     getReviews();
   }, [id]);
 
-  console.log("Đánh giá", review);
-
   return (
     <Spring className="card flex flex-col">
       <h5 className="mb-4">Lợi nhuận theo danh mục</h5>

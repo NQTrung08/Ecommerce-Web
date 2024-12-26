@@ -230,6 +230,17 @@ const App = () => {
                       )
                     }
                   />
+
+                  <Route
+                    path="reviews"
+                    element={
+                      isAuthenticated() ? (
+                        <Reviews />
+                      ) : (
+                        <Navigate to="/login" replace />
+                      )
+                    }
+                  />
                   <Route
                     path="customers"
                     element={

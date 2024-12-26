@@ -42,17 +42,26 @@ const SellerProfile = () => {
     endDate: "2024-12-31",
   });
 
+  const calculateGroupBy = (startDate, endDate) => {
+    
+    const start = new Date(endDate[0]);
+    const end = new Date(endDate[1]);
+    const diffInDays = (end - start) / (1000 * 60 * 60 * 24);
+
+    return diffInDays > 30 ? "month" : "day";
+  };
+
   const fetchData = async (startDate, endDate) => {
     try {
       setLoading(true);
+      const groupBy = calculateGroupBy(startDate, endDate);
       const revenueData = await getRevenueByShopId({
         id,
         startDate,
         endDate,
-        groupBy: "month",
+        groupBy,
       });
 
-        console.log("revenueData", revenueData)
       const statisticCategory = await statisticCategoryForShop(id);
 
       setStatisticCategory(statisticCategory);
@@ -72,9 +81,13 @@ const SellerProfile = () => {
   }, [selectedDates]);
 
   const handleDateChange = ({ startDate, endDate }) => {
-    setSelectedDates({ startDate, endDate });
-  };
-
+  
+    setSelectedDates({
+      startDate: endDate[0],
+      endDate: endDate[1],
+    });
+  };  
+  
   if (loading) return <Loader />;
   if (error) return <div>{error}</div>;
 
