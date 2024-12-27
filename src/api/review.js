@@ -42,3 +42,17 @@ export const createReview = async (productId, rating, comment) => {
     throw error;
   }
 };
+
+export const getCountReviews = async (type="admin", id = "") => {
+  try {
+    console.log("type", type, id)
+    const response = await axiosInstance.get(`${URL_API}review/count`, {
+      type, 
+      id
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch reviews", error);
+    throw error;
+  }
+};

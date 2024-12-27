@@ -10,6 +10,7 @@ import PageHeader from "@layout/PageHeader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Modal, Tree, Input, Button, Upload } from "antd";
+import Loader from "@components/Loader";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 const CategoryTree = () => {
@@ -21,7 +22,7 @@ const CategoryTree = () => {
   const [previewImage, setPreviewImage] = useState(null);
   const [showActionModal, setShowActionModal] = useState(false);
   const [action, setAction] = useState("create");
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -31,6 +32,7 @@ const CategoryTree = () => {
       const response = await categoryBuildTree();
       setCategories(formatCategory(response));
       setTreeData(formatTreeData(response));
+      setIsLoading(false)
     } catch (error) {
       console.error("Failed to fetch categories", error);
     }
@@ -177,11 +179,13 @@ const CategoryTree = () => {
       fetchCategories();
       resetForm();
       setShowActionModal(false);
+      setIsLoading(false)
     } catch (error) {
       toast.error(`Lỗi khi ${action} danh mục.`);
     }
   };
   
+  if (isLoading) return <Loader />;
   const resetForm = () => {
     setCategoryName("");
     setFile(null);

@@ -67,7 +67,7 @@ const AppBar = () => {
  const roleNames = dataInforUser?.roleNames || [];
     
   return (
-    <div className="card no-hover flex flex-col gap-5 !p-5 mb-5 md:mb-[26px] md:!p-[26px] lg:!py-5 lg:flex-row
+    <div className="fixed w-full card no-hover flex flex-col gap-5 !p-5 mb-5 md:mb-[26px] md:!p-[26px] lg:!py-5 lg:flex-row
                  lg:items-center lg:gap-4">
       <div className="mb-5 w-full">
         <div style={{ zIndex: 999 }}>

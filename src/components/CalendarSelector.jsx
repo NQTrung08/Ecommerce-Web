@@ -1,5 +1,6 @@
-import RangeDatePicker from "@ui/RangeDatePicker";
+import { useState } from "react";
 import PropTypes from "prop-types";
+import RangeDatePicker from "@ui/RangeDatePicker"; // Update this path if incorrect.
 
 const CalendarSelector = ({
   wrapperClass,
@@ -7,7 +8,10 @@ const CalendarSelector = ({
   id,
   onDateChange,
 }) => {
+  const [currentDates, setCurrentDates] = useState({ startDate: "", endDate: "" });
+
   const handleDateChange = (startDate, endDate) => {
+    setCurrentDates({ startDate, endDate });
     if (onDateChange) {
       onDateChange({ startDate, endDate });
     }

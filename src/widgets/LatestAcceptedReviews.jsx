@@ -9,7 +9,7 @@ import usePagination from "@hooks/usePagination";
 
 // constants
 import { REVIEW_SORT_OPTIONS } from "@constants/options";
-import { getReviewForShop } from "../api/review"; // Assuming this is the correct API function
+import { getReviewForShop } from "../api/review"; 
 import { useParams } from "react-router-dom";
 
 const LatestAcceptedReviews = ({ reviews: propReviews }) => {

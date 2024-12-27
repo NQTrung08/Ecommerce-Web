@@ -1,35 +1,26 @@
 import { useEffect, useState } from "react";
-import { getAllReview } from "../api/review"; 
+import { useParams } from "react-router-dom"; // Đảm bảo bạn đã cài đặt react-router-dom
+import { getAllReview, getCountReviews } from "../api/review"; 
 import PageHeader from "../layout/PageHeader";
 import LatestAcceptedReviews from "../widgets/LatestAcceptedReviews";
 import Loader from "@components/Loader";
 
 const Reviews = () => {
+  const { slug } = useParams();
   const [reviews, setReviews] = useState([]);
-  const [totalReviews, setTotalReviews] = useState(0);
-  const [newPercentage, setNewPercentage] = useState(0);
-  const [regularPercentage, setRegularPercentage] = useState(0);
-  const [averageRating, setAverageRating] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0); 
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const data = await getAllReview();
-        const reviewsData = data;
-
-        // Process data
+        const type = slug ? "shop" : "admin";
+        const id = slug || ""; 
+        const reviewsData = await getAllReview();
         setReviews(reviewsData);
-        const total = reviewsData.length;
-        const average =
-          reviewsData.reduce((sum, review) => sum + review.rating, 0) / total;
-        const newPercent = (25 / total) * 100; 
-        const regularPercent = (75 / total) * 100;
 
-        setTotalReviews(total);
-        setAverageRating(average.toFixed(1));
-        setNewPercentage(newPercent);
-        setRegularPercentage(regularPercent);
+        const countData = await getCountReviews(type, id);
+        setTotalCount(countData.total); 
       } catch (error) {
         console.error("Failed to fetch reviews", error);
       } finally {
@@ -38,7 +29,7 @@ const Reviews = () => {
     };
 
     fetchReviews();
-  }, []);
+  }, [slug]);
 
   if (loading) {
     return <Loader />;
@@ -48,6 +39,9 @@ const Reviews = () => {
     <>
       <PageHeader title="Đánh giá" />
       <div className="flex flex-col flex-1 gap-5 md:gap-[26px]">
+        <div className="text-xl font-semibold">
+          Tổng số đánh giá: {totalCount}
+        </div>
         <LatestAcceptedReviews reviews={reviews} />
       </div>
     </>

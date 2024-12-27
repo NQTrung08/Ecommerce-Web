@@ -87,7 +87,7 @@ const App = () => {
           <div className="app_content">
             {width >= 1280 && withSidebar && <AppBar />}
             <Suspense fallback={<Loader />}>
-              <div className="main">
+              <div className="main pt-28">
                 <Routes>
                   <Route path="/login" element={<Login />} />
                   <Route

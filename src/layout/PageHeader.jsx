@@ -23,7 +23,7 @@ const PageHeader = ({ title }) => {
     <>
       <DocumentTitle title={title} />
       <div
-        className="card no-hover flex flex-col gap-5 !p-5 mb-5 md:mb-[26px] md:!p-[26px] lg:!py-5 lg:flex-row
+        className=" w-full card no-hover flex flex-col gap-5 !p-5 mb-5 md:mb-[26px] md:!p-[26px] lg:!py-5 lg:flex-row
                  lg:items-center lg:gap-4"
       >
         <h1 className="flex-1 text-center lg:text-left text-2xl">{title}</h1>

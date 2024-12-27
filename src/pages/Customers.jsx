@@ -81,7 +81,7 @@ const Customers = () => {
   return (
     <div className="w-full">
       <PageHeader title="Người dùng" />
-      <div className=" bg-white rounded-lg w-full">
+      <div className=" bg-white rounded-lg w-full min-h-80 flex items-center justify-center">
         {loading ? (
           <Loader />
         ) : error ? (

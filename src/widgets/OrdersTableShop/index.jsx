@@ -1,86 +1,16 @@
 import dayjs from "dayjs";
 import { useState } from "react";
-import { updateOrderStatus } from "../../api/order";
-import { toast, ToastContainer } from "react-toastify";
+import { Pagination } from "antd"; 
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const OrdersTable = ({ initialOrders }) => {
   const [orders, setOrders] = useState(initialOrders);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [isCancelling, setIsCancelling] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);  
+  const [pageSize] = useState(10); 
 
-  const handleCancelOrderForShop = async (orderId) => {
-    try {
-      setIsCancelling(true);
-      const success = await updateOrderStatus(orderId, "cancelled");
-      if (success) {
-        const updatedOrders = orders.map((order) =>
-          order._id === orderId
-            ? { ...order, order_status: "cancelled" }
-            : order
-        );
-        setOrders(updatedOrders); // Đặt lại danh sách đơn hàng
-        toast.success("Trạng thái đơn hàng đã được cập nhật thành 'Đã hủy'.", {
-          toastId: `cancel_${orderId}`,
-        });
-      } else {
-        throw new Error("Failed to update order status to 'cancelled'");
-      }
-    } catch (error) {
-      console.error("Error updating order status:", error);
-      toast.error("Có lỗi xảy ra khi cập nhật trạng thái đơn hàng.", {
-        toastId: `error_cancel_${orderId}`,
-      });
-    } finally {
-      setIsCancelling(false);
-    }
-  };
-
-  const handleUpdateStatus = async (orderId) => {
-    try {
-      const orderToUpdate = orders.find((order) => order._id === orderId);
-      if (!orderToUpdate) return;
-
-      let nextStatus;
-      switch (orderToUpdate.order_status) {
-        case "pending":
-          nextStatus = "confirmed";
-          break;
-        case "confirmed":
-          nextStatus = "shipped";
-          break;
-        case "shipped":
-          nextStatus = "completed";
-          break;
-        default:
-          return; // Không có trạng thái tiếp theo
-      }
-
-      const success = await updateOrderStatus(orderId, nextStatus);
-      if (success) {
-        const updatedOrders = orders.map((order) =>
-          order._id === orderId ? { ...order, order_status: nextStatus } : order
-        );
-        setOrders(updatedOrders);
-        toast.success(
-          `Trạng thái đơn hàng đã được cập nhật thành '${nextStatus}'.`,
-          { toastId: `update_${orderId}` }
-        );
-      } else {
-        throw new Error("Failed to update order status");
-      }
-    } catch (error) {
-      console.error("Error updating order status:", error);
-      toast.error("Có lỗi xảy ra khi cập nhật trạng thái đơn hàng.", {
-        toastId: `error_update_${orderId}`,
-      });
-    }
-  };
-
-   {
-     console.log("filteredOrders", orders);
-   }
   const filteredOrders = orders.filter((order) => {
     const orderDate = dayjs(order.createdAt);
     const isAfterStartDate = startDate
@@ -92,9 +22,17 @@ const OrdersTable = ({ initialOrders }) => {
     return isAfterStartDate && isBeforeEndDate;
   });
 
+  const paginatedOrders = filteredOrders.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
+
+  const onPageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="space-y-6 p-4 bg-gray-50 rounded-lg">
-      {/* Bộ lọc ngày */}
       <div className="mb-4 flex space-x-4">
         <div className="w-full">
           <label
@@ -129,13 +67,12 @@ const OrdersTable = ({ initialOrders }) => {
       </div>
 
       {/* Danh sách đơn hàng */}
-      {console.log("filteredOrders", filteredOrders)}
-      {filteredOrders.length === 0 ? (
+      {paginatedOrders.length === 0 ? (
         <p className="text-gray-600 text-center">
           Không có đơn hàng nào để hiển thị.
         </p>
       ) : (
-        filteredOrders.map((order) => (
+        paginatedOrders.map((order) => (
           <div
             key={order._id}
             className="border-b py-4 px-6 bg-white rounded-lg shadow-md"
@@ -171,39 +108,19 @@ const OrdersTable = ({ initialOrders }) => {
                   </span>
                 </p>
               </div>
-              {/* <div className="flex flex-col gap-5">
-                {order.order_status !== "cancel" &&
-                  order.order_status !== "cancelled" && (
-                    <button
-                      className={`text-white bg-rose-500 rounded-xl px-4 py-2 ${
-                        order.order_status === "pending"
-                          ? "hover:opacity-80"
-                          : "opacity-50 cursor-not-allowed"
-                      }`}
-                      onClick={() => handleCancelOrderForShop(order._id)}
-                      disabled={
-                        order.order_status !== "pending" || isCancelling
-                      }
-                    >
-                      Hủy đơn hàng
-                    </button>
-                  )}
-
-                {order.order_status !== "completed" &&
-                  order.order_status !== "cancel" &&
-                  order.order_status !== "cancelled" && (
-                    <button
-                      className="text-white bg-blue-500 rounded-xl px-4 py-2 hover:opacity-80"
-                      onClick={() => handleUpdateStatus(order._id)}
-                    >
-                      Cập nhật trạng thái
-                    </button>
-                  )}
-              </div> */}
             </div>
           </div>
         ))
       )}
+
+      <Pagination
+        current={currentPage}
+        total={filteredOrders.length}
+        pageSize={pageSize}
+        onChange={onPageChange}
+        showSizeChanger={false}  
+        className="mt-4"
+      />
 
       <ToastContainer />
     </div>

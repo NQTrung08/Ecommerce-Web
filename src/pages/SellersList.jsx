@@ -5,8 +5,11 @@ import SellerProfilesList from '@widgets/SellerProfilesList';
 const SellersList = () => {
     return (
       <>
-        <PageHeader title="Danh sách  cửa hàng" />
-        <SellerProfilesList />
+
+        <PageHeader title="Danh sách cửa hàng" />
+        <div>
+          <SellerProfilesList />
+        </div>
       </>
     );
 }
