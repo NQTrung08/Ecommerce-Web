@@ -1,10 +1,8 @@
-import PageHeader from "@layout/PageHeader";
 import CalendarSelector from "@components/CalendarSelector";
 import SalesProfitByCategory from "@widgets/SalesProfitByCategory";
 import PeriodSalesRevenue from "@widgets/PeriodSalesRevenue";
 import SellerProfileInfobox from "@components/SellerProfileInfobox";
 import Loader from "@components/Loader";
-import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getRevenueByShopId } from "../api/statistic";
 import { statisticCategoryForShop } from "../api/categorie";
@@ -26,7 +24,6 @@ const Boxes = ({ wrapperClass, dataTotalRevenue, dataTotalOrders }) => {
 };
 
 const SellerProfile = () => {
-  const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [shopData, setShopData] = useState(null);
