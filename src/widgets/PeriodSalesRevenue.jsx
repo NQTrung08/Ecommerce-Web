@@ -66,7 +66,6 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const PeriodSalesRevenue = ({ revenueData }) => {
-  console.log("first", revenueData)
   const { width } = useWindowSize();
   const data = preprocessData(revenueData);
 

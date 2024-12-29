@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { getRevenueByShopId } from "../api/statistic";
 import { statisticCategoryForShop } from "../api/categorie";
 import { getShopById } from "../api/shop"; // Import shop API
+import { useParams } from "react-router-dom"; // Đảm bảo bạn đã cài đặt react-router-dom
 
 const Boxes = ({ wrapperClass, dataTotalRevenue, dataTotalOrders }) => {
   return (
@@ -24,6 +25,7 @@ const Boxes = ({ wrapperClass, dataTotalRevenue, dataTotalOrders }) => {
 };
 
 const SellerProfile = () => {
+  const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [shopData, setShopData] = useState(null);
@@ -80,11 +82,20 @@ const SellerProfile = () => {
   }, [selectedDates]);
 
   const handleDateChange = ({ startDate, endDate }) => {
+    const formatDate = (date) => {
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+  
     setSelectedDates({
-      startDate: endDate[0],
-      endDate: endDate[1],
+      startDate: formatDate(startDate),
+      endDate: formatDate(endDate),
     });
   };
+  
 
   if (loading) return <Loader />;
   if (error) return <div>{error}</div>;

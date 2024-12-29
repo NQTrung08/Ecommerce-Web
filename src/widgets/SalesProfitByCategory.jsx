@@ -70,7 +70,7 @@ const SalesProfitByCategory = ({ statisticCategory }) => {
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
           <div className="flex flex-col gap-2">
-            <h5>Đánh giá</h5>
+            <h5>Đánh giá {averageRating} trên 5</h5>
             <RatingStars value={averageRating} />
           </div>
           <div className="sm:text-right">

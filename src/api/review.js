@@ -42,14 +42,19 @@ export const createReview = async (productId, rating, comment) => {
     throw error;
   }
 };
-
-export const getCountReviews = async (type="admin", id = "") => {
+export const getCountReviews = async (type = "admin", id = "") => {
   try {
-    console.log("type", type, id)
-    const response = await axiosInstance.get(`${URL_API}review/count`, {
-      type, 
-      id
-    });
+    console.log("type", type, id);
+    const config = checkToken("application/json");
+
+    // Dữ liệu cần truyền vào payload
+    const payload = { type };
+    if (type !== "admin") {
+      payload.id = id; // Chỉ thêm id nếu type không phải là admin
+    }
+
+    const response = await axiosInstance.post(`${URL_API}review/counts`, payload, config);
+
     return response.data;
   } catch (error) {
     console.error("Failed to fetch reviews", error);
