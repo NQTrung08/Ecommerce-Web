@@ -40,7 +40,7 @@ const Reviews = () => {
       0
     );
     const totalReviews = countData.reduce((acc, review) => acc + review.count, 0);
-    return totalReviews > 0 ? (totalRatings / totalReviews).toFixed(2) : "0.00";
+    return totalReviews > 0 ? (totalRatings / totalReviews).toFixed(1) : "0.00";
   }, [countData]);
 
   if (loading) {
