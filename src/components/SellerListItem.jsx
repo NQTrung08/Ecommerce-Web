@@ -67,11 +67,11 @@ const SellerListItem = ({ seller, index }) => {
          {seller.profit.length !== 0 ? <div className="max-w-[400px] flex flex-col">
           <div className='min-w-[400px]'>
             <h5 className="mb-2.5 xl:hidden 2xl:block">
-              Lợi nhuận theo danh mục:
+              Doanh thu ngành hàng:
             </h5>
           </div>    
           <div className="flex flex-col max-w-[400px]">
-            <h5 className="mb-2.5 hidden xl:block 2xl:hidden">Lợi nhuận:</h5>
+            <h5 className="mb-2.5 hidden xl:block 2xl:hidden">Doanh thu:</h5>
             <div className="flex flex-col gap-4">
               {seller.profit.slice(0, 4).map((category, index) => (
                 <LabeledProgressBar
@@ -114,7 +114,7 @@ const SellerListItem = ({ seller, index }) => {
                     num={seller.totalRevenueEcommerce}
                     isFormatted
                   />
-                  <span className="label-text">Lợi nhuận</span>
+                  <span className="label-text">Doanh thu</span>
                 </div>
               </div>
             </div>

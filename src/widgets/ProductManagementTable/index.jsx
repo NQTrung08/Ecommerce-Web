@@ -117,7 +117,7 @@ const ProductManagementTable = () => {
       },
     },
     {
-      title: "Danh mục",
+      title: "Ngành hàng",
       dataIndex: "category",
       render: (category) => (
         <button className="text-accent capitalize">{category}</button>

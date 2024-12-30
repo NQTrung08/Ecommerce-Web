@@ -43,7 +43,7 @@ export const getAllOrder = async (status) => {
   try {
     const config = checkToken("application/json");
 
-    const url = `${URL_API}order/user${
+    const url = `${URL_API}order${
       status ? `?status=${status}` : ""
     }`;
 

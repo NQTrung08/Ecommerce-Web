@@ -22,7 +22,7 @@ const ProductGridItem = ({ product, index, isSlide }) => {
             </NavLink>
             {isSlide && <RatingStars rating={product.rating}/>}
             <div className={`flex flex-col flex-1 ${isSlide ? 'gap-1 mt-1.5' : 'gap-2.5 mt-2.5'}`}>
-                <p className="font-heading font-bold text-sm leading-[1.4] text-green">
+                <p className="font-heading font-bold text-sm leading-[1.4] ">
                     Available : {product.in_stock || 0}
                 </p>
                 <p className="font-heading font-bold text-sm leading-[1.4] text-accent">

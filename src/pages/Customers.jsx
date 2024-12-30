@@ -30,6 +30,33 @@ const Customers = () => {
     fetchCustomers();
   }, []);
 
+  const renderStatus = (status) => {
+    let statusText = '';
+    let statusColor = '';
+    switch (status) {
+      case 'active':
+        statusText = 'Hoạt động';
+        statusColor = 'text-green-darker';
+        break;
+      case 'pending':
+        statusText = 'Chờ xử lý';
+        statusColor = 'text-amber-400';
+        break;
+      case 'block':
+        statusText = 'Bị khóa';
+        statusColor = 'text-rose-500';
+        break;
+      default:
+        statusText = 'Không xác định';
+        statusColor = 'text-gray-500';
+    }
+    return (
+      <span className={statusColor}>
+        {statusText}
+      </span>
+    );
+  }
+
   // Cấu hình các cột trong bảng
   const TRANSACTIONS_COLUMN_DEFS = [
     {
@@ -63,13 +90,7 @@ const Customers = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (status) => (
-        <span
-          className={status === "active" ? "text-green-500" : "text-rose-500"}
-        >
-          {status === "active" ? "Đang hoạt động" : "Không hoạt động"}
-        </span>
-      ),
+      render: (status) => renderStatus(status)
     }
   ];
 
@@ -94,7 +115,7 @@ const Customers = () => {
             locale={{
               emptyText: <Empty text="Không tìm thấy khách hàng nào" />,
             }}
-            pagination={false} 
+            pagination={false}
           />
         )}
       </div>

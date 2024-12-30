@@ -12,7 +12,7 @@ const ROUTES = [
     name: "Sản phẩm",
     icon: "boxes-stacked-regular",
     links: [
-      { name: "Danh mục", path: "/categories" },
+      { name: "Ngành hàng", path: "/categories" },
       { name: "Quản lý sản phẩm", path: "/products-management" },
     ],
   },

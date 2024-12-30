@@ -31,14 +31,15 @@ const SalesProfitByCategory = ({ statisticCategory }) => {
 
   const formattedData = statisticCategoryWithColor.map((item) => ({
     label: item.categoryName,
-    value: item.totalRevenue, 
-    color: item.color, 
+    value: item.totalRevenue,
+    color: item.color,
   }));
 
-  // Tính toán đánh giá trung bình từ các đánh giá
+  /// Tính toán đánh giá trung bình từ các đánh giá
   const averageRating = review.length > 0
-    ? review.reduce((sum, r) => sum + r.rating, 0) / review.length
-    : 0;
+    ? (review.reduce((sum, r) => sum + r.rating, 0) / review.length).toFixed(1)
+    : "0.0";
+
 
   useEffect(() => {
     const getReviews = async () => {
@@ -55,16 +56,16 @@ const SalesProfitByCategory = ({ statisticCategory }) => {
 
   return (
     <Spring className="card flex flex-col">
-      <h5 className="mb-4">Lợi nhuận theo danh mục</h5>
+      <h5 className="mb-4">Doanh thu ngành hàng</h5>
       <div className="flex flex-1 flex-col gap-[27px] justify-between">
         <div className="flex flex-col gap-4">
           {formattedData.length !== 0 ? formattedData.map((item, index) => (
             <LabeledProgressBar
               key={index}
-              label={item.label} 
-              value={getPercentage(formattedData, item.value)} 
-              color={item.color} 
-              displayValue={numFormatter(item.value, 2)} 
+              label={item.label}
+              value={getPercentage(formattedData, item.value)}
+              color={item.color}
+              displayValue={numFormatter(item.value, 2)}
             />
           )) : <div className="text-rose-500 flex text-center text-xl w-full justify-center">Chưa có dữ liệu</div>}
         </div>
@@ -74,7 +75,7 @@ const SalesProfitByCategory = ({ statisticCategory }) => {
             <RatingStars value={averageRating} />
           </div>
           <div className="sm:text-right">
-          <p className="text-sm text-header sm:mb-1.5">Từ {review.length} người phản hồi</p>
+            <p className="text-sm text-header sm:mb-1.5">Từ {review.length} người phản hồi</p>
             <NavLink className="text-btn" to={`/reviews/${id}`}>
               Xem tất cả đánh giá
             </NavLink>

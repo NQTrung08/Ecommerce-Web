@@ -67,7 +67,6 @@ const Sidebar = () => {
                       <div className="flex items-center gap-2.5">
                         {route.name === "Danh mục" ? (
                           <>
-                            <p>hahahaha</p>
                             <FontAwesomeIcon icon="fa-solid fa-warehouse" />
                           </>
                         ) : (

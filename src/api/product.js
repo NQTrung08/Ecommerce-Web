@@ -26,7 +26,7 @@ export const GetAllProduct = async (isPublic = true, isDraft, isDeleted) => {
 
     // Construct the API URL with the query parameters
     const response = await axiosInstance.get(
-      `${URL_API}product/shop-owners?${queryParams.toString()}`,
+      `${URL_API}product?${queryParams.toString()}`,
       config
     );
 
