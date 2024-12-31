@@ -12,7 +12,7 @@ import { useParams } from "react-router-dom"; // Đảm bảo bạn đã cài đ
 const Boxes = ({ wrapperClass, dataTotalRevenue, dataTotalOrders }) => {
   return (
     <div className={`grid w-full grid-cols-2 gap-5`}>
-      <SellerProfileInfobox value={dataTotalRevenue} label="Tổng lợi nhuận" />
+      <SellerProfileInfobox value={dataTotalRevenue} label="Tổng doanh thu" />
       <SellerProfileInfobox
         icon="barcode"
         color="green"

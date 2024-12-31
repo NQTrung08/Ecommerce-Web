@@ -34,8 +34,8 @@ const MainProfileInfo = ({ totalRevenueEcommerce, totalOrdersEcommerce }) => {
         </div>
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-4">
-            <h5>Tỷ lệ trung bình</h5>
-            <InfoBtn onClick={handleClick} />
+            {/* <h5>Tỷ lệ trung bình 2024</h5>
+            <InfoBtn onClick={handleClick} /> */}
           </div>
           <div className="flex-1 grid grid-cols-1 gap-6 md:grid-cols-2 lg:flex justify-between xl:max-w-[670px]">
             <div className="flex gap-5">
@@ -49,11 +49,6 @@ const MainProfileInfo = ({ totalRevenueEcommerce, totalOrdersEcommerce }) => {
                 <span className="label-text mb-2">Doanh thu</span>
               </div>
             </div>
-            {console.log(
-              "totalRevenueEcommerce.revenue",
-              totalRevenueEcommerce,
-              totalOrdersEcommerce
-            )}
             <div className="flex gap-5">
               <div className="badge-icon bg-accent">
                 <i className="icon-barcode" />

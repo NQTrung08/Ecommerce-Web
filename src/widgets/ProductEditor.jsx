@@ -34,7 +34,7 @@ const ProductEditor = () => {
         const data = await getCategories();
         setCategories(data.filter((category) => category.value !== "all"));
       } catch (error) {
-        toast.error("Không thể tải danh mục");
+        toast.error("Không thể tải ngành hàng");
       }
     };
 
@@ -253,7 +253,7 @@ const ProductEditor = () => {
             {/* Category Selection */}
             <div className="field-wrapper">
               <label className="field-label" htmlFor="category">
-                Danh mục
+                Ngành hàng
               </label>
               <Controller
                 name="category_id"
@@ -266,7 +266,7 @@ const ProductEditor = () => {
                     id="category"
                     {...field}
                   >
-                    <option value="">Chọn danh mục</option>
+                    <option value="">Chọn ngành hàng</option>
                     {categories.map((category) => (
                       <option key={category._id} value={category._id}>
                         {category.category_name}

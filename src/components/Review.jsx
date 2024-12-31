@@ -14,6 +14,7 @@ import {useState, useEffect} from 'react';
 
 // utils
 import dayjs from 'dayjs';
+import moment from 'moment';
 
 
 const User = ({ data, wrapperClass }) => {
@@ -80,7 +81,7 @@ const Review = ({ data, index = 0 }) => {
                     )}
                     {width >= 1024 && (
                         <Timestamp
-                            date={dayjs(data.date, 'HH:mm DD/MM/YYYY').toDate()}
+                            date={data?.date}
                             wrapperClass="xl:ml-[30px] xl:mr-[75px]"
                         />
                     )}

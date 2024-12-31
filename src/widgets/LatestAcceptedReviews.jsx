@@ -2,17 +2,17 @@ import Spring from "@components/Spring";
 import Select from "@ui/Select";
 import Review from "@components/Review";
 import Pagination from "@ui/Pagination";
-
+import moment from "moment";
 // hooks
 import { useState, useEffect } from "react";
 import usePagination from "@hooks/usePagination";
 
 // constants
 import { REVIEW_SORT_OPTIONS } from "@constants/options";
-import { getReviewForShop } from "../api/review"; 
+import { getReviewForShop } from "../api/review";
 import { useParams } from "react-router-dom";
 
-const LatestAcceptedReviews = ({ reviews: propReviews }) => {
+const LatestAcceptedReviews = ({ reviews: propReviews, totalCount, avgRating }) => {
   const { slug } = useParams();
   const [reviews, setReviews] = useState(propReviews || []);
   const [sort, setSort] = useState(REVIEW_SORT_OPTIONS[0]);
@@ -28,7 +28,7 @@ const LatestAcceptedReviews = ({ reviews: propReviews }) => {
       }
     };
 
-    if ( slug) {
+    if (slug) {
       fetchReviews();
     }
   }, [slug, propReviews]);
@@ -53,13 +53,22 @@ const LatestAcceptedReviews = ({ reviews: propReviews }) => {
 
   return (
     <Spring className="flex flex-1 flex-col gap-[26px]">
-      <div className="flex w-full justify-end">
-        <Select
-          value={sort}
-          onChange={setSort}
-          options={REVIEW_SORT_OPTIONS}
-          variant="minimal"
-        />
+      <div className="flex w-full justify-end items-center">
+        <div className="text-md font-medium flex gap-1 items-center">
+          Đánh giá:
+          <span className="text-amber-400 text-lg">
+            {avgRating}
+          </span>
+          ({totalCount})
+        </div>
+        <div className="flex">
+          <Select
+            value={sort}
+            onChange={setSort}
+            options={REVIEW_SORT_OPTIONS}
+            variant="minimal"
+          />
+        </div>
       </div>
       <div className="card !p-0 flex-1">
         <span className="block h-[1px] bg-input-border opacity-60" />
@@ -74,13 +83,7 @@ const LatestAcceptedReviews = ({ reviews: propReviews }) => {
                 user: review.user_id,
                 rating: review.rating,
                 comment: review.comment,
-                date: new Date(review.createdAt).toLocaleString("vi-VN", {
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }),
+                date: review.createdAt,
               }}
               index={index}
             />

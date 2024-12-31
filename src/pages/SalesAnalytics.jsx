@@ -4,6 +4,8 @@ import MainProfileInfo from "@widgets/MainProfileInfo";
 import SalesStats from "@widgets/SalesStats";
 import { getProfitForAdmin, getShopRevenue } from "../api/statistic";
 import Loader from "@components/Loader";
+import moment from "moment";
+import { DatePicker } from "antd";
 
 const SalesAnalytics = () => {
   const [totalRevenueEcommerce, setTotalRevenueEcommerce] = useState(null);
@@ -14,17 +16,17 @@ const SalesAnalytics = () => {
   const [dataTotalOrders, setTotalOrdersData] = useState([]);
 
   // State for date range
-  const [startDate, setStartDate] = useState("2024-01-01");
-  const [endDate, setEndDate] = useState("2024-12-31");
+  const [startDate, setStartDate] = useState(moment().startOf("year"));
+  const [endDate, setEndDate] = useState(moment().endOf("year"));
   const [groupBy, setGroupBy] = useState("month");
 
   let debounceTimer = null;
 
   // Determine `groupBy` based on the date range
   const calculateGroupBy = (startDate, endDate) => {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const diffInDays = (end - start) / (1000 * 60 * 60 * 24);
+    const start = moment(startDate, "DD-MM-YYYY");
+    const end = moment(endDate, "DD-MM-YYYY");
+    const diffInDays = end.diff(start, "days");
 
     if (diffInDays <= 30) return "day";
     if (diffInDays <= 365) return "month";
@@ -44,31 +46,34 @@ const SalesAnalytics = () => {
       const transformedTotalRevenueData = revenueData.map((item) => ({
         name:
           groupBy === "month"
-            ? `Tháng ${item.month}`
+            ? `${item.month}`
             : groupBy === "year"
-            ? `Năm ${item.year}`
-            : groupBy === "day"
-            ? `Ngày ${item.day}`
-            : item.date,
+              ? `${item.year}`
+              : groupBy === "day"
+                ? `${item.day}`
+                : item.date,
         revenue: item.totalRevenue,
       }));
-      
+
       const transformedTotalOrders = revenueData.map((item) => ({
         name:
           groupBy === "month"
-            ? `Tháng ${item.month}`
+            ? `${item.month}`
             : groupBy === "year"
-            ? `Năm ${item.year}`
-            : groupBy === "day"
-            ? `Ngày ${item.day}/${item.month} `
-            : item.date,
+              ? `${item.year}`
+              : groupBy === "day"
+                ? `${item.day}`
+                : item.date,
         revenue: item.totalOrders,
       }));
+
       const totalRevenue = transformedTotalRevenueData.reduce((total, item) => total + item.revenue, 0);
       const totalOrder = transformedTotalOrders.reduce((total, item) => total + item.revenue, 0);
 
       setTotalRevenueEcommerce(totalRevenue);
       setTotalOrdersEcommerce(totalOrder);
+
+      console.log("groupBy", groupBy)
       setTotalRevenueData(transformedTotalRevenueData);
       setTotalOrdersData(transformedTotalOrders);
     } catch (error) {
@@ -109,24 +114,22 @@ const SalesAnalytics = () => {
             <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">
               Ngày bắt đầu
             </label>
-            <input
-              type="date"
-              id="startDate"
+            <DatePicker
+              value={startDate} // Truyền đối tượng moment vào đây
+              onChange={(date) => setStartDate(date)} // Cập nhật lại startDate
+              format={'DD/MM/YYYY'}
               className="mt-1 block w-full text-black rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
             />
           </div>
           <div>
             <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">
               Ngày kết thúc
             </label>
-            <input
-              type="date"
-              id="endDate"
+            <DatePicker
+              value={endDate} // Truyền đối tượng moment vào đây
+              onChange={(date) => setEndDate(date)} // Cập nhật lại endDate
+              format={'DD/MM/YYYY'}
               className="mt-1 block w-full text-black rounded-lg border border-gray-300 px-3 py-2 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
             />
           </div>
           <div>
@@ -151,9 +154,8 @@ const SalesAnalytics = () => {
         </div>
 
         <div
-          className={`flex ${
-            groupBy === "day" ? "flex-col" : "flex-row"
-          } justify-between gap-3 mt-4`}
+          className={`flex ${groupBy === "day" ? "flex-col" : "flex-row"
+            } justify-between gap-3 mt-4`}
         >
           <SalesStats data={dataTotalOrders} title="Đơn hàng" />
           <SalesStats data={dataTotalRevenue} title="Doanh thu" color="gray" />

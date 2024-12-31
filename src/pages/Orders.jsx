@@ -24,8 +24,8 @@ const Orders = () => {
     { value: "pending", name: "Chờ xử lý" },
     { value: "confirmed", name: "Đã xác nhận" },
     { value: "shipped", name: "Đang vận chuyển" },
-    { value: "completed", name: "Đã giao hàng" },
-    { value: "cancelled", name: "Đã hủy" },
+    { value: "completed", name: "Hoàn thành" },
+    { value: "canceled", name: "Đã hủy" },
     { value: "waiting", name: "Chờ thanh toán" },
   ];
 
@@ -58,17 +58,8 @@ const Orders = () => {
 
   // Count orders by status
  const countOrdersByStatus = (status) => {
-   return AllOrders.filter((order) => order.order_status === status) // Lọc các đơn hàng có trạng thái phù hợp
-     .reduce((total, order) => {
-       // Tính tổng số lượng sản phẩm trong các đơn hàng đã lọc
-       return (
-         total +
-         order.order_products.reduce(
-           (productTotal, product) => productTotal + product.quantity,
-           0
-         )
-       );
-     }, 0);
+   const orders = AllOrders.filter((order) => order.order_status === status) // Lọc các đơn hàng có trạng thái phù hợp
+  return orders.length
  };
 
 
@@ -98,7 +89,7 @@ const Orders = () => {
       />
       <OrdersInfobox
         title="Chờ xác nhận"
-        count={countOrdersByStatus("confirmed")}
+        count={countOrdersByStatus("pending")}
         color="badge-status-bg"
         icon={<i className="icon-rotate-left-solid" />}
       />
@@ -110,7 +101,7 @@ const Orders = () => {
       />
       <OrdersInfobox
         title="Đã hủy"
-        count={countOrdersByStatus("cancelled")}
+        count={countOrdersByStatus("canceled")}
         color="red"
         icon={<i className="icon-ban-solid" />}
       />

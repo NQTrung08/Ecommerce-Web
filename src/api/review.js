@@ -53,7 +53,7 @@ export const getCountReviews = async (type = "admin", id = "") => {
       payload.id = id; // Chỉ thêm id nếu type không phải là admin
     }
 
-    const response = await axiosInstance.post(`${URL_API}review/counts`, payload, config);
+    const response = await axiosInstance.post(`${URL_API}review/count`, payload, config);
 
     return response.data;
   } catch (error) {

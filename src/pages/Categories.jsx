@@ -77,7 +77,7 @@ const CategoryTree = () => {
           newIndex: newPos,
         });
       }
-      toast.success("Đã di chuyển danh mục thành công.");
+      toast.success("Cập nhật ngành hàng thành công.");
       fetchCategories();
     } catch (error) {
       console.error("Error updating category:", error);
@@ -124,7 +124,7 @@ const CategoryTree = () => {
             onClick={() => openModal("create", node)}
           />
           <EditOutlined
-            className="ml-2 text-green-500"
+            className="ml-2 text-green-darker"
             onClick={() => openModal("edit", node)}
           />
           <DeleteOutlined
@@ -164,24 +164,24 @@ const CategoryTree = () => {
     try {
       if (action === "create" && categoryName) {
         await addCategory('', categoryName, file);
-        toast.success("Đã tạo danh mục thành công.");
+        toast.success("Tạo ngành hàng thành công.");
       } else if (action === "edit" && selectedCategory) {
         await updateCategory(selectedCategory.id, {
           parent_id: selectedCategory.parentId,
           category_name: categoryName,
           file,
         });
-        toast.success("Đã cập nhật danh mục thành công.");
+        toast.success("Đã cập nhật ngành hàng thành công.");
       } else if (action === "delete" && selectedCategory) {
         await deleteCategory(selectedCategory.id);
-        toast.success("Đã xóa danh mục thành công.");
+        toast.success("Đã xóa ngành hàng thành công.");
       }
       fetchCategories();
       resetForm();
       setShowActionModal(false);
       setIsLoading(false)
     } catch (error) {
-      toast.error(`Lỗi khi ${action} danh mục.`);
+      toast.error(`Lỗi khi ${action} ngành hàng.`);
     }
   };
   
@@ -194,7 +194,7 @@ const CategoryTree = () => {
 
   return (
     <div>
-      <PageHeader title="Quản lý danh mục" />
+      <PageHeader title="Quản lý ngành hàng" />
       <ToastContainer />
 
       <div className="w-full">
@@ -204,7 +204,7 @@ const CategoryTree = () => {
           onClick={() => openModal("create")}
           className="mb-4"
         >
-          Tạo danh mục mới
+          Tạo ngành hàng mới
         </Button>
 
         <Tree
@@ -256,7 +256,7 @@ const CategoryTree = () => {
             )}
           </>
         )}
-        {action === "delete" && <p>Bạn có chắc chắn muốn xóa danh mục này?</p>}
+        {action === "delete" && <p>Bạn có chắc chắn muốn xóa ngành hàng này?</p>}
       </Modal>
     </div>
   );
