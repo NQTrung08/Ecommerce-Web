@@ -222,7 +222,7 @@ const CategoryTree = () => {
       </div>
 
       <Modal
-        title={`${action.charAt(0).toUpperCase() + action.slice(1)} Category`}
+        title={`${action.charAt(0).toUpperCase() + action.slice(1)} ngành hàng`}
         open={showActionModal}
         onOk={handleAction}
         onCancel={() => {

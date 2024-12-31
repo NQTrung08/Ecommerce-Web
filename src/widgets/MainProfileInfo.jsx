@@ -34,7 +34,7 @@ const MainProfileInfo = ({ totalRevenueEcommerce, totalOrdersEcommerce }) => {
         </div>
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-4">
-            <h5>Tỷ lệ trung bình 2024</h5>
+            <h5>Tỷ lệ trung bình</h5>
             <InfoBtn onClick={handleClick} />
           </div>
           <div className="flex-1 grid grid-cols-1 gap-6 md:grid-cols-2 lg:flex justify-between xl:max-w-[670px]">

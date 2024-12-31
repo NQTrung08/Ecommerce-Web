@@ -36,24 +36,6 @@ const SalesAnalytics = () => {
     setGroupBy(calculateGroupBy(startDate, endDate));
   }, [startDate, endDate]);
 
-  // Fetch benefit data (general stats)
-  useEffect(() => {
-    const fetchBenefitData = async () => {
-      try {
-        const data = await getProfitForAdmin();
-        setTotalRevenueEcommerce(data.totalRevenueEcommerce);
-        setTotalOrdersEcommerce(data.totalOrdersEcommerce);
-      } catch (err) {
-        setError("Failed to load benefit data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBenefitData();
-  }, []);
-
-  // Fetch revenue and order data for the selected date range
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -78,13 +60,15 @@ const SalesAnalytics = () => {
             : groupBy === "year"
             ? `Năm ${item.year}`
             : groupBy === "day"
-            ? `Ngày ${item.day}`
+            ? `Ngày ${item.day}/${item.month} `
             : item.date,
         revenue: item.totalOrders,
       }));
-      
+      const totalRevenue = transformedTotalRevenueData.reduce((total, item) => total + item.revenue, 0);
+      const totalOrder = transformedTotalOrders.reduce((total, item) => total + item.revenue, 0);
 
-      console.log("groupBy",groupBy)
+      setTotalRevenueEcommerce(totalRevenue);
+      setTotalOrdersEcommerce(totalOrder);
       setTotalRevenueData(transformedTotalRevenueData);
       setTotalOrdersData(transformedTotalOrders);
     } catch (error) {
@@ -93,6 +77,10 @@ const SalesAnalytics = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleChange = (e) => {
+    setGroupBy(e.target.value);
   };
 
   // Debounce for API calls
@@ -145,13 +133,20 @@ const SalesAnalytics = () => {
             <p htmlFor="groupBy" className="block text-sm font-medium text-gray-700">
               Nhóm theo
             </p>
-            <input
-              type="text"
+            <div>
+            <select
               id="groupBy"
-              className="mt-1 block w-full text-black rounded-lg border border-gray-300 px-3 py-2 bg-slate-300 text-gray-500 sm:text-sm cursor-not-allowed pointer-events-none"
-              value={groupBy === "day" ? "Ngày" : groupBy === "month" ? "Tháng" : "Năm"}
-              readOnly
-            />
+              className="mt-1 block w-full text-black rounded-lg border border-gray-300 px-3 py-2 text-gray-500 sm:text-sm"
+              value={groupBy}
+              onChange={handleChange}
+            >
+              <option value="day">Ngày</option>
+              <option value="month">Tháng</option>
+              <option value="year">Năm</option>
+            </select>
+
+           </div>
+
           </div>
         </div>
 
