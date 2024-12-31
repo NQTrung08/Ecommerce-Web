@@ -33,7 +33,7 @@ const OrdersTable = ({ initialOrders }) => {
 
   return (
     <div className="space-y-6 p-4 bg-gray-50 rounded-lg">
-      <div className="mb-4 flex space-x-4">
+      {/* <div className="mb-4 flex space-x-4">
         <div className="w-full">
           <label
             htmlFor="start-date"
@@ -64,7 +64,7 @@ const OrdersTable = ({ initialOrders }) => {
             onChange={(e) => setEndDate(e.target.value)}
           />
         </div>
-      </div>
+      </div> */}
 
       {/* Danh sách đơn hàng */}
       {paginatedOrders.length === 0 ? (

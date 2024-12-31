@@ -25,7 +25,6 @@ const Login = lazy(() => import("@pages/Login"));
 const SalesAnalytics = lazy(() => import("@pages/SalesAnalytics"));
 const SellersList = lazy(() => import("@pages/SellersList"));
 const SellersTable = lazy(() => import("@pages/SellersTable"));
-const SellersGrid = lazy(() => import("@pages/SellersGrid"));
 const SellerProfile = lazy(() => import("@pages/SellerProfile"));
 const Categories = lazy(() => import("@pages/Categories"));
 const RevenueByPeriod = lazy(() => import("@pages/RevenueByPeriod"));
@@ -33,9 +32,7 @@ const TopProducts = lazy(() => import("@pages/TopProducts"));
 const ProductsGrid = lazy(() => import("@pages/ProductsGrid"));
 const ProductsManagement = lazy(() => import("@pages/ProductsManagement"));
 const ProductEditor = lazy(() => import("@pages/EditProduct"));
-const Banners = lazy(() => import("@pages/Banners"));
 const Orders = lazy(() => import("@pages/Orders"));
-const Statistics = lazy(() => import("@pages/Statistics"));
 const Reviews = lazy(() => import("@pages/Reviews"));
 const Customers = lazy(() => import("@pages/Customers"));
 const Transactions = lazy(() => import("@pages/Transactions"));
@@ -120,16 +117,7 @@ const App = () => {
                       )
                     }
                   />
-                  <Route
-                    path="sellers-grid"
-                    element={
-                      isAuthenticated() ? (
-                        <SellersGrid />
-                      ) : (
-                        <Navigate to="/login" replace />
-                      )
-                    }
-                  />
+                  
                   <Route
                     path="products-management"
                     element={
@@ -195,16 +183,6 @@ const App = () => {
                     element={
                       isAuthenticated() ? (
                         <ProductEditor />
-                      ) : (
-                        <Navigate to="/login" replace />
-                      )
-                    }
-                  />
-                  <Route
-                    path="banners"
-                    element={
-                      isAuthenticated() ? (
-                        <Banners />
                       ) : (
                         <Navigate to="/login" replace />
                       )
