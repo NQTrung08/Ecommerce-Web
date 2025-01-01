@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Empty } from "antd";
+import { Alert, Empty, Pagination } from "antd";
 import Loader from "../components/Loader";
 import { getCustomer } from "../api/customer";
 import PageHeader from "../layout/PageHeader";
@@ -30,34 +30,33 @@ const Customers = () => {
     fetchCustomers();
   }, []);
 
+  const handlePageChange = (page, pageSize) => {
+    setPagination({ currentPage: page, pageSize });
+  };
+
   const renderStatus = (status) => {
-    let statusText = '';
-    let statusColor = '';
+    let statusText = "";
+    let statusColor = "";
     switch (status) {
-      case 'active':
-        statusText = 'Hoạt động';
-        statusColor = 'text-green-darker';
+      case "active":
+        statusText = "Hoạt động";
+        statusColor = "text-green-darker";
         break;
-      case 'pending':
-        statusText = 'Chờ xử lý';
-        statusColor = 'text-amber-400';
+      case "pending":
+        statusText = "Chờ xử lý";
+        statusColor = "text-amber-400";
         break;
-      case 'block':
-        statusText = 'Bị khóa';
-        statusColor = 'text-rose-500';
+      case "block":
+        statusText = "Bị khóa";
+        statusColor = "text-rose-500";
         break;
       default:
-        statusText = 'Không xác định';
-        statusColor = 'text-gray-500';
+        statusText = "Không xác định";
+        statusColor = "text-gray-500";
     }
-    return (
-      <span className={statusColor}>
-        {statusText}
-      </span>
-    );
-  }
+    return <span className={statusColor}>{statusText}</span>;
+  };
 
-  // Cấu hình các cột trong bảng
   const TRANSACTIONS_COLUMN_DEFS = [
     {
       title: "Ảnh đại diện",
@@ -90,8 +89,8 @@ const Customers = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (status) => renderStatus(status)
-    }
+      render: (status) => renderStatus(status),
+    },
   ];
 
   const paginationData = customers.slice(
@@ -102,21 +101,32 @@ const Customers = () => {
   return (
     <div className="w-full">
       <PageHeader title="Người dùng" />
-      <div className=" bg-white rounded-lg w-full min-h-80 flex items-center justify-center">
+      <div className="bg-white rounded-lg w-full min-h-80">
         {loading ? (
           <Loader />
         ) : error ? (
           <Alert message={error} type="error" showIcon />
         ) : (
-          <StyledTable
-            columns={TRANSACTIONS_COLUMN_DEFS}
-            dataSource={paginationData}
-            rowKey={(record) => record._id}
-            locale={{
-              emptyText: <Empty text="Không tìm thấy khách hàng nào" />,
-            }}
-            pagination={false}
-          />
+          <>
+            <StyledTable
+              columns={TRANSACTIONS_COLUMN_DEFS}
+              dataSource={paginationData}
+              rowKey={(record) => record._id}
+              locale={{
+                emptyText: <Empty text="Không tìm thấy khách hàng nào" />,
+              }}
+              pagination={false}
+            />
+            <div className="flex justify-end mt-4">
+              <Pagination
+                current={pagination.currentPage}
+                pageSize={pagination.pageSize}
+                total={customers.length}
+                onChange={handlePageChange}
+                showSizeChanger
+              />
+            </div>
+          </>
         )}
       </div>
     </div>
