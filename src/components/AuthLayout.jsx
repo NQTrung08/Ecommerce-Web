@@ -9,6 +9,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useWindowSize } from "react-use";
 import classNames from "classnames";
 import media from "@assets/login.webp";
+import google from "@assets/icons/google.png";
+import facebook from "@assets/icons/facebook.png";
 import { signIn } from "../api/auth";
 import { setCookie } from "@utils/cookie";
 import { useDispatch } from "react-redux";
@@ -16,7 +18,7 @@ import {
   CHANGE_STATUS_AUTH,
   CHANGE_VALUE_TOKEN,
 } from "../redux/slice/auth/authSlice";
-import Loader from "../components/Loader";
+import Loading from "../components/Loading";
 
 const AuthLayout = () => {
   const { width } = useWindowSize();
@@ -89,7 +91,7 @@ const AuthLayout = () => {
     navigate("/sign-up");
   };
 
-  if (loading) return <Loader />;
+  if (loading) return <Loading />;
 
   return (
     <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 4xl:grid-cols-[minmax(0,_1030px)_minmax(0,_1fr)]">

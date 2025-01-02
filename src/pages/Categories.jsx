@@ -163,8 +163,10 @@ const CategoryTree = () => {
   
     try {
       if (action === "create" && categoryName) {
-        await addCategory('', categoryName, file);
+        await addCategory(selectedCategory.id ? selectedCategory.id : "", categoryName, file);
         toast.success("Tạo ngành hàng thành công.");
+        setFile(null);
+        setPreviewImage(null);
       } else if (action === "edit" && selectedCategory) {
         await updateCategory(selectedCategory.id, {
           parent_id: selectedCategory.parentId,
@@ -222,20 +224,29 @@ const CategoryTree = () => {
       </div>
 
       <Modal
-        title={`${action.charAt(0).toUpperCase() + action.slice(1)} ngành hàng`}
+        title={
+          action === "create"
+            ? "Tạo ngành hàng mới"
+            : action === "edit"
+            ? "Chỉnh sửa ngành hàng"
+            : action === "delete"
+            ? "Xóa ngành hàng"
+            : "Thao tác ngành hàng"
+        }
         open={showActionModal}
         onOk={handleAction}
         onCancel={() => {
           setShowActionModal(false);
           resetForm();
         }}
-        okText={action === "delete" ? "Delete" : "Save"}
-        cancelText="Cancel"
+        okText={action === "delete" ? "Xóa" : "Lưu"}
+        cancelText="Hủy"
         style={{
           top: "50%",
-          transform: "translateY(-50%) translateX(70%)",
+          transform: "translateY(-100%) translateX(100%)",
         }}
       >
+
         {action !== "delete" && (
           <>
             <Input
@@ -247,7 +258,7 @@ const CategoryTree = () => {
             <Upload beforeUpload={() => false} onChange={handleFileChange}>
               <Button>Tải hình ảnh</Button>
             </Upload>
-            {previewImage && (
+            {previewImage && file && (
               <img
                 src={previewImage}
                 alt="Preview"
