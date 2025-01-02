@@ -131,7 +131,7 @@ const OrdersTable = ({ initialOrders }) => {
             className="flex justify-between items-center border-b py-4 px-6 bg-white rounded-lg shadow-md"
           >
             {/* Thông tin Shop */}
-            <div className="flex items-center">
+            <div className="flex items-center mx-3">
               {order.order_shopId?.logo ? (
                 <img
                   src={order.order_shopId.logo}
@@ -165,7 +165,7 @@ const OrdersTable = ({ initialOrders }) => {
               </div>
             </div>
 
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start w-5/12">
               <div className="w-full">
                 <h3 className="text-lg font-semibold text-gray-800">
                   Mã đơn hàng:{" "}
