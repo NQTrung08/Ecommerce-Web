@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import dayjs from "dayjs";
 import Spring from "@components/Spring";
 import StyledTable from "./styles";
-import CalendarSelector from "@components/CalendarSelector";
 import Select from "@ui/Select";
 import Pagination from "@ui/Pagination";
 import TransactionCollapseItem from "@components/TransactionCollapseItem";
@@ -23,54 +22,38 @@ const TransactionsTable = () => {
   const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [loading, setLoader] = useState(true);
   const [error, setError] = useState(null);
-  const [dateRange, setDateRange] = useState([dayjs().startOf("year"), dayjs()]);
 
   const pagination = usePagination(filteredTransactions, 6);
 
   useEffect(() => {
-    const loadData = async () => {
+    const fetchData = async () => {
       try {
-        const fetchedTransactions = await fetchTransaction();
-        setTransactions(fetchedTransactions);
-        setFilteredTransactions(fetchedTransactions);
+        const data = await fetchTransaction();
+        setTransactions(data);
+        setFilteredTransactions(data); // Initially set all transactions
+        setLoader(false);
       } catch (error) {
-        setError("Failed to fetch transactions");
-        console.error("Error fetching transactions", error);
-      } finally {
+        setError(error);
         setLoader(false);
       }
     };
 
-    loadData();
+    fetchData();
   }, []);
 
   useEffect(() => {
-    const filterAndSortByDateRange = () => {
-      const [start, end] = dateRange;
-  
-      // Lọc giao dịch theo phạm vi ngày đã chọn
-      const filtered = transactions.filter(
-        (transaction) =>
-          dayjs(transaction.timestamp).isAfter(start, 'day') &&
-          dayjs(transaction.timestamp).isBefore(end, 'day')
-      );
-  
-      // Sắp xếp giao dịch theo thứ tự ngày
-      const sorted = filtered.sort((a, b) => {
-        if (sort.value === "recent") {
-          return dayjs(b.timestamp).isBefore(dayjs(a.timestamp)) ? 1 : -1;
-        } else if (sort.value === "oldest") {
-          return dayjs(a.timestamp).isBefore(dayjs(b.timestamp)) ? 1 : -1;
-        }
-        return 0; // Giữ nguyên nếu không có lựa chọn sắp xếp
-      });
-  
-      setFilteredTransactions(sorted);
-    };
-  
-    filterAndSortByDateRange();
-  }, [dateRange, transactions, sort]);
-  
+    // Sort transactions based on the selected sort option
+    const sorted = [...transactions].sort((a, b) => {
+      if (sort.value === "recent") {
+        return dayjs(b.timestamp).isBefore(dayjs(a.timestamp)) ? 1 : -1;
+      } else if (sort.value === "oldest") {
+        return dayjs(a.timestamp).isBefore(dayjs(b.timestamp)) ? 1 : -1;
+      }
+      return 0; // Keep order as is if no sort option is selected
+    });
+
+    setFilteredTransactions(sorted);
+  }, [transactions, sort]);
 
   const handleCollapse = (sku) => {
     setActiveCollapse((prev) => (prev === sku ? "" : sku));
@@ -82,13 +65,7 @@ const TransactionsTable = () => {
   return (
     <>
       <div className="flex flex-col gap-4 mb-5 md:flex-row justify-between">
-        <CalendarSelector
-          wrapperClass="md:max-w-[275px]"
-          id="transactionsDate"
-          label="Ngày giao dịch từ"
-          onChange={setDateRange}
-        />
-        <div className="flex flex-col-reverse gap-2.5 md:flex-col md:min-w-[220px]">
+        <div className=" gap-2.5 md:min-w-[220px] flex flex-row justify-between items-center">
           <p className="md:text-right">
             Xem giao dịch: {pagination.showingOf()}
           </p>
