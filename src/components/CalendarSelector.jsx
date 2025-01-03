@@ -22,7 +22,7 @@ const CalendarSelector = ({
       <label className="h5 w-fit text-xl" htmlFor={id}>
         {label}:
       </label>
-      <RangeDatePicker id={id} onChange={handleDateChange} />
+      {/* <RangeDatePicker id={id} onChange={handleDateChange} /> */}
     </div>
   );
 };

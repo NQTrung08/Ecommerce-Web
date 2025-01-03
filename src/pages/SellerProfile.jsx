@@ -35,8 +35,8 @@ const SellerProfile = () => {
   const [statisticCategory, setStatisticCategory] = useState([]);
 
   const [selectedDates, setSelectedDates] = useState({
-    startDate: "2023-01-01",
-    endDate: "2024-12-31",
+    startDate: "2025-01-01",
+    endDate: "2025-12-31",
   });
 
   const calculateGroupBy = (startDate, endDate) => {
@@ -176,14 +176,14 @@ const SellerProfile = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 mb-5 md:mb-[26px] md:gap-5 lg:flex-row lg:justify-between">
+      {/* <div className="flex flex-col gap-4 mb-5 md:mb-[26px] md:gap-5 lg:flex-row lg:justify-between">
         <CalendarSelector
           wrapperClass="md:max-w-[275px]"
           id="sellerPeriodSelector"
           onDateChange={handleDateChange}
           selectedDates={selectedDates}
         />
-      </div>
+      </div> */}
       <div className="widgets-grid grid-cols-1 md:grid-cols-3 2xl:grid-cols-6 mb-10">
         <div className="widgets-grid grid-cols-1 md:col-span-3 lg:grid-cols-2 2xl:col-span-6">
           <PeriodSalesRevenue revenueData={revenueData} />
